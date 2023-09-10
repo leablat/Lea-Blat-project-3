@@ -11,6 +11,7 @@ import Register from './components/pages/register';
 import AddVacation from './components/pages/addVacation';
 import EditVacation from './components/pages/editVacayion';
 
+
 interface IRoute {
     path: string,
     key: string,
@@ -37,10 +38,9 @@ const routes: Array<IRoute> = [
         key: "addVacation",
     },
     {
-        path: "/editVacation/:id",
-        component: <EditVacation></EditVacation>,
-        key: "editVacation",
-        label: "editVacation"
+        path: "/editVacation/:vacationId",
+    component: <EditVacation></EditVacation>,
+    key: "editVacation",
     },
 
     {
@@ -69,11 +69,11 @@ export const UTCContext = createContext<{ isUtc: boolean }>({ isUtc: true })
 
 function App() {
     const navigate = useNavigate();
-    const [isUtc, setIsUtc] = useState(false)
-    function logoutHandler() {
-        localStorage.removeItem("token")
+     const [isUtc, setIsUtc] = useState(false)
+     function logoutHandler() {
+    localStorage.removeItem("token")
 
-        navigate("/login")
+    navigate("/login")
     }
 
     return (

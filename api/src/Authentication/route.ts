@@ -49,8 +49,10 @@ async function loginFunc(req, res, next) {
 
             return res.status(404).send("User is undefined")
         if (!result) throw new Error()
-        console.log(userRecord)
-        const signedToken = jsonwebtoken.sign({ userName: userRecord.email, id: userRecord.id, role: userRecord.role }, process.env.SECRET)
+
+        const signedToken = await jsonwebtoken.sign({ userName: userRecord.email, userId: userRecord.userId, role: userRecord.role }, process.env.SECRET)
+        console.log("signedToken",signedToken);
+        
         res.json({ token: signedToken })
     } catch (error) {
         return res.status(401).send("User is unauthorized")

@@ -1,26 +1,52 @@
+import express, { Request, Response, NextFunction } from "express";
+import { addFollower } from "./handlers/addFollower";
+import { deletionFollower } from "./handlers/deleteFollower";
+import { getFollowerById } from "./handlers/getFollowerById";
 
-// import express, { NextFunction } from "express"
-// const cartRouter = express.Router();
-// import uuid4 from "uuid4"
-// import { logger } from "../logger";
-// const follwersRouter = express.Router();
+const followersRouter = express.Router();
+followersRouter.get("/:id", getFollower)
+followersRouter.post("/new", addNewFollowers);
+followersRouter.delete("/:id", deleteFollowers)
 
-// follwersRouter.get("/", getFollowers)
+async function getFollower(req: any, res: Response, next: NextFunction) {
+    const vacationId = Number(req.params.id);
+    try {
+        const result: any = await getFollowerById(vacationId, req.currentUserId);
+        let [data] = result;
+        if (data.length === 0)
+            return res.send({});
+        res.send(data[0])
+    }
+    catch (err) {
+        res.status(500).send("get went wrong")
+    }
+
+}
+
+async function addNewFollowers(req: any, res: Response, next: NextFunction) {
+    const vacationId = req.body.vacationId
+    console.log("userid", req.currentUserId);
+
+    const result = await addFollower(vacationId, req.currentUserId)
+
+    res.json({})
 
 
+}
 
-// async function getFollowers(req: Request, res: Response, next: NextFunction) {
-// //     try {
-// //         const vacationId = req.query.vacationId;
-// //         const userId = req.query.userId;
+async function deleteFollowers(req: any, res: Response, next: NextFunction) {
+    const vacationId = Number(req.params.id);
+    console.log("delete");
+    try {
+        await deletionFollower(vacationId, req.currentUserId);
+        res.json({ message: "Followers delete successfully." });
+    }
+    catch (err) {
+        res.status(500).send("delete went wrong")
+    }
+
+}
+
+export { followersRouter }
 
 
-       
-// //         res.json(results)
-// //     } catch (error) {
-// //         logger.error(error.message)
-// //         return next(error)
-// //     }
-// // }
-
-// export { follwersRouter };

@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
 import { TypeOf, date, object, string } from "zod";
 import { addNewVacationService } from "./service";
+import { useNavigate } from "react-router-dom";
 
 const newVacationSchema = object({
     destination: string(),
@@ -15,6 +16,7 @@ const newVacationSchema = object({
 type newVacationInput = TypeOf<typeof newVacationSchema>;
 
 const AddVacation = () => {
+    const navigate = useNavigate();
     const methods = useForm<newVacationInput>({
         resolver: zodResolver(newVacationSchema),
     });
@@ -33,7 +35,8 @@ const AddVacation = () => {
 
         const result = await addNewVacationService(vacation);
         console.log( "result" ,result);
-        
+        navigate("/vacations")
+
     }
 
     return (
@@ -46,7 +49,7 @@ const AddVacation = () => {
                         <input type="text" {...methods.register("destination")} />
                         {methods.formState.errors.destination && <span>{methods.formState.errors.destination.message}</span>}
                         Description of the vacation
-                        <input type="text" {...methods.register("description")} value="aaa"/>
+                        <input type="text" {...methods.register("description")} />
                         {methods.formState.errors.description && <span>{methods.formState.errors.description.message}</span>}
                         Start Date
                         <input type="date" {...methods.register("startDate")} />
@@ -55,12 +58,12 @@ const AddVacation = () => {
                         <input type="date" {...methods.register("endDate")} />
                         {methods.formState.errors.endDate && <span>{methods.formState.errors.endDate.message}</span>}
 
-                        {/* Price
+                        Price
                         <input type="price" {...methods.register("price")} />
                         {methods.formState.errors.price && <span>{methods.formState.errors.price.message}</span>}
                         Image
                         <input type="text" {...methods.register("imageFileName")} />
-                        {methods.formState.errors.imageFileName && <span>{methods.formState.errors.imageFileName.message}</span>} */}
+                        {methods.formState.errors.imageFileName && <span>{methods.formState.errors.imageFileName.message}</span>}
                     </div>
                     <button type="button"  onClick={addNewVacation}>Send</button>
                 </form>

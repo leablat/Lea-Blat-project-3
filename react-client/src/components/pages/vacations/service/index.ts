@@ -8,7 +8,9 @@ export interface IVacation {
   startDate: string,
   endDate: string,
   price: string,
-  imageFileName: string
+  imageFileName: string,
+  followers:number
+
 }
 
 async function getAllVacationsService(): Promise<Array<IVacation>> {
@@ -31,7 +33,8 @@ console.log(axiosConfig.options);
       startDate: v.startDate,
       endDate: v.endDate,
       price: v.price,
-      imageFileName: v.imageFileName
+      imageFileName: v.imageFileName,
+      followers:v.followers
 
     }
   })

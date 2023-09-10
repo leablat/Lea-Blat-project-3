@@ -4,6 +4,7 @@ import cors from "cors"
 import { vacationsRouter } from "./vacations/route";
 import jsonwebtoken from "jsonwebtoken"
 import { authRouter } from "./Authentication/route";
+import { followersRouter } from "./followers/route";
 
 dotenv.config()
 
@@ -13,6 +14,8 @@ app.use(cors())
 app.use("/auth", authRouter)
 app.use(verifyAuthentication)
 app.use("/vacations", vacationsRouter)
+app.use("/followers", followersRouter)
+
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     console.log({ message: err.message })
@@ -25,19 +28,16 @@ app.listen(process.env.PORT, () => {
 
 function verifyAuthentication(req: Request, res: Response, next) {
     const { authorization: token } = req.headers
-    console.log("verifyAuthentication");
     
     jsonwebtoken.verify(token, process.env.SECRET, function (err, decoded: any) {
         if (err) {
-            console.log(`${new Date().toISOString()} => requestId: ${res.getHeader("x-request-id")} | User Token invalid ${err.message}`)
-            console.log({ message: err.message })
-
             return res.status(401).send("Authentication error")
         } else {
+            
+            
             (req as any).currentUserName = decoded.userName;
-            (req as any).currentUserId = decoded.id;
+            (req as any).currentUserId = decoded.userId;
             (req as any).currentUserRole = decoded.role;
-            console.log(`${new Date().toISOString()} => requestId: ${res.getHeader("x-request-id")} | User authenticated Successfully`)
             return next()
         }
     });

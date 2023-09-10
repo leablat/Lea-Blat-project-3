@@ -40,18 +40,25 @@ export default function VacationsList() {
   return (
     <div>
       {isAdmin && <button type="button" onClick={addVacation}>
-        
+
         Add Vacation
       </button>}
       {/* TODO IN VACATION CARD */}
-      {!isAdmin && <button type="button" onClick={addVacation}>
-        
-        LIKE
-      </button>}
+     
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
       {vacations.map((vacation) => (
-        <div key={vacation.vacationId}>
-          <VacationCard vacation={vacation} loadVacations={getVacations} />        </div>
-      ))}
+  <div key={vacation.vacationId}>
+    <VacationCard
+      key={vacation.vacationId}
+      vacation={vacation}
+      loadVacations={getVacations}
+      isAdmin={isAdmin} // Pass isAdmin to each VacationCard
+    />
+  </div>
+))}
+
+      </div>
+
     </div>
   );
 }

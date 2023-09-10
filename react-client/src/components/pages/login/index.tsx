@@ -60,7 +60,7 @@ const LoginForm = () => {
             })
             .catch((error) => {
                 if (error.response.status == 404) {
-                    setErrorMessage("המשתמש לא קיים במערכת")
+                    setErrorMessage("User does not exist in the system!")
                 }
             })
           
@@ -69,9 +69,14 @@ const LoginForm = () => {
         }
     }
 
+    function newUser (){
+        navigate("/register")
+    }
+
     return (
         <form >
-            <h2>Login</h2>
+            {/* <h2>Login</h2> */}
+            <br></br>
             <div>
                 <label htmlFor="email">Email:</label>
                 <input
@@ -101,8 +106,13 @@ const LoginForm = () => {
                     required
                 />
             </div> */}
-            {errorMessage}
             <button type="button" onClick={loginService}>Login</button>
+<br></br>
+<div>  {errorMessage}</div>   
+
+<br></br>
+<button type="button" onClick={newUser}>New user</button>
+
         </form>
     );
 };

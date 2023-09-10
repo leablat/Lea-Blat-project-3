@@ -13,22 +13,18 @@ export interface IVacation {
 
 async function addVacation(vacation: IVacation): Promise<number> {
     try {
+        
         const query =
             "INSERT INTO `vacations`.`vacations` (`destination`, `description`, `startDate`,`endDate`, `price`,`imageFileName`) VALUES (?,?,?,?,?,?);";
 
-        // Ensure optional properties are not undefined
-        const price = vacation.price || null; // Change null to a suitable default value if needed
-        const imageFileName = vacation.imageFileName || null; // Change null to a suitable default value if needed
-
+        
         const results = await pool.execute(query, [
             vacation.destination,
             vacation.description,
             vacation.startDate,
             vacation.endDate,
-            price,
-            imageFileName
-            // vacation.price,
-            // vacation.imageFileName,
+            vacation.price,
+            vacation.imageFileName,
         ]);
 
         const [data] = results;

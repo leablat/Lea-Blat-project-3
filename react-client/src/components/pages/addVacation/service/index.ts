@@ -6,11 +6,10 @@ import axiosConfig from "../../helper/httpConfig";
 
 
 async function addNewVacationService(vacation: any) {
-console.log("kjhsdfl;kjsldffkj");
   try {
-    const { destination, description, startDate, endDate } = vacation;
+    const { destination, description, startDate, endDate, price, imageFileName } = vacation;
     if (!destination || !description || !startDate || !endDate
-      // || !price || !imageFileName
+      || !price || !imageFileName
     ) {
       alert("All fields are mandatory!");
       throw new Error("Missing required fields");

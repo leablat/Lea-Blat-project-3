@@ -1,9 +1,21 @@
 import axios from "axios";
+import axiosConfig from "../../../helper/httpConfig";
+import { useNavigate } from "react-router-dom";
+
 
 async function deleteVacationService(vacationId:Number) {
   try {
-    
-    const response = await axios.delete(`http://localhost:4002/vacations/${vacationId}`);
+    // const navigate = useNavigate()
+
+    const response = await axios.delete(`${axiosConfig.baseUrl}/vacations/${vacationId}`,axiosConfig.options).catch((error) => {
+      if (error.response.status == 401) {
+        // navigate("/login")
+
+        throw Error("401");
+      }
+      throw Error("error");
+    })
+
 
     if (response.status === 200) {
       // Vacation deleted successfully

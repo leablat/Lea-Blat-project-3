@@ -68,3 +68,10 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.active{
+  background-color: #ee1379;
+}
+.not-active{
+  background-color: #454547;
+}
