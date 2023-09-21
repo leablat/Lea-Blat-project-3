@@ -59,11 +59,42 @@ export default function VacationsList() {
 
   }
 
-
-
   function checkIsAdmin() {
     setIsAdmin(checkIsAdminJwt())
   }
+
+  const downloadAllVacationsCSV = () => {
+    if (vacations.length === 0) {
+        console.error('No data to export.');
+        return;
+    }
+
+    // יצור מערך של מחרוזות CSV עבור כל חופשה
+    const csvContentArray = vacations.map((vacation) => {
+        return `${vacation.destination},${vacation.followers}`;
+    });
+
+    // הפוך את המערך למחרוזת אחת גדולה על ידי הפרדה באמצעות רגלין חדלניות
+    const csvContent = `Destination,Followers\n${csvContentArray.join('\n')}`;
+
+    // יצירת אובייקט Blob עם הנתונים של ה-CSV
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+
+    // יצירת URL עבור ה-Blob
+    const url = window.URL.createObjectURL(blob);
+
+    // יצירת אלמנט לינק שיגרום להורדת הקובץ
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'all_vacations.csv'; // שינוי השם של הקובץ אם רצוי
+    a.click();
+
+    // השחרור של ה-URL
+    window.URL.revokeObjectURL(url);
+};
+
+
+
   return (
     <div>
 
@@ -92,6 +123,14 @@ export default function VacationsList() {
 
         Add Vacation
       </button>}
+
+      {isAdmin && (
+                <div>
+                    <button style={{ marginRight: "800px" }} type="button" onClick={downloadAllVacationsCSV}>
+                        Download All Vacations CSV
+                    </button>
+                </div>
+            )}
       {/* TODO IN VACATION CARD */}
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>

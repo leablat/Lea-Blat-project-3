@@ -1,17 +1,17 @@
-import { object, string, TypeOf } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, FormProvider } from "react-hook-form";
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
+import { z } from "zod";
 
-const registrationSchema = object({
-    email: string().email("Invalid email"),
-    firstName: string(),
-    password: string().min(6, "Password must be at least 6 characters"),
-    lastName: string()
+const registrationSchema = z.object({
+    email: z.string().email("Invalid email"),
+    firstName:z.string(),
+    password: z.string().min(4, "Password must be at least 6 characters"),
+    lastName: z.string()
 });
 
-type RegistrationInput = TypeOf<typeof registrationSchema>;
+type RegistrationInput = z.infer<typeof registrationSchema>;
 
 const RegistrationComponent = () => {
     const navigate = useNavigate()

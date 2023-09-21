@@ -2,7 +2,7 @@ import express, { Request, Response, NextFunction } from "express"
 import dotenv from "dotenv"
 import cors from "cors"
 import { vacationsRouter } from "./vacations/route";
-import jsonwebtoken from "jsonwebtoken"
+import jsonwebtoken from "jsonwebtoken";
 import { authRouter } from "./Authentication/route";
 import { followersRouter } from "./followers/route";
 import { commentsRouter } from "./Comments/route";
