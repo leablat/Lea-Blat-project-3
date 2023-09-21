@@ -6,11 +6,11 @@ async function deletionFollower(vacationId: number, userId: number) {
     try {
         console.log(vacationId, userId);
 
-        const [deletedVacation] = await pool.execute(
+        const [deletionFollower] = await pool.execute(
             'DELETE FROM followers WHERE vacationId =? and userId=?',
             [vacationId, userId]
         );
-        if ((deletedVacation as ResultSetHeader).affectedRows === 0) {
+        if ((deletionFollower as ResultSetHeader).affectedRows === 0) {
             throw new Error(`Vacation with ID ${vacationId} not found.`);
         }
 

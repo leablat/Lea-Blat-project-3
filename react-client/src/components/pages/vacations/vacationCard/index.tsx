@@ -65,14 +65,22 @@ const VacationCard = ({ vacation, loadVacations, isAdmin }: VacationCardProps) =
   }
 
   async function like() {
+    
     if (isFollower) {
       await deleteFollowerService(vacationId);
+      vacation.followers = vacation.followers -1
     }
     else{
       await addFollowerService(vacationId);
+      vacation.followers = vacation.followers +1
     }
     getFollower();
   }
+
+function MoreDetails(){
+  navigate(`/vacationDetails/${vacationId}`);
+
+}
 
   return (
     <div style={{ display: "flex", flexWrap: "wrap" }}>
@@ -94,7 +102,7 @@ const VacationCard = ({ vacation, loadVacations, isAdmin }: VacationCardProps) =
           </button>}
           {!isAdmin && <button type="button" onClick={like} className={isFollower? 'active':'not-active'}>
 
-            LIKE{vacation.followers}
+            LIKE{vacation.followers?vacation.followers: ""}
           </button>}
         </div>
         <img
@@ -105,6 +113,10 @@ const VacationCard = ({ vacation, loadVacations, isAdmin }: VacationCardProps) =
         <h2>{vacation.destination}</h2>
         <p>{vacation.description}</p>
         <p>Price: {vacation.price}</p>
+
+        <button type="button" onClick={MoreDetails}>
+        More details
+          </button>
       </div>
 
     </div>

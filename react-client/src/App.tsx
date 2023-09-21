@@ -10,6 +10,7 @@ import LoginForm from './components/pages/login'
 import Register from './components/pages/register';
 import AddVacation from './components/pages/addVacation';
 import EditVacation from './components/pages/editVacayion';
+import VacationDetails from './components/pages/vacations/vacationDetails'
 
 
 interface IRoute {
@@ -39,8 +40,8 @@ const routes: Array<IRoute> = [
     },
     {
         path: "/editVacation/:vacationId",
-    component: <EditVacation></EditVacation>,
-    key: "editVacation",
+        component: <EditVacation></EditVacation>,
+        key: "editVacation",
     },
 
     {
@@ -48,6 +49,11 @@ const routes: Array<IRoute> = [
         component: <VacationsList />,
         key: "vacations",
         label: "Vacations"
+    },
+    {
+        path: "/vacationDetails/:vacationId",
+        component: <VacationDetails />,
+        key: "vacationDetails",
     },
     {
         path: "/reports",
@@ -69,11 +75,11 @@ export const UTCContext = createContext<{ isUtc: boolean }>({ isUtc: true })
 
 function App() {
     const navigate = useNavigate();
-     const [isUtc, setIsUtc] = useState(false)
-     function logoutHandler() {
-    localStorage.removeItem("token")
+    const [isUtc, setIsUtc] = useState(false)
+    function logoutHandler() {
+        localStorage.removeItem("token")
 
-    navigate("/login")
+        navigate("/login")
     }
 
     return (

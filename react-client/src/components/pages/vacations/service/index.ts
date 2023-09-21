@@ -9,36 +9,45 @@ export interface IVacation {
   endDate: string,
   price: string,
   imageFileName: string,
-  followers:number
+  followers: number
 
 }
 
-async function getAllVacationsService(): Promise<Array<IVacation>> {
-console.log(axiosConfig.options);
+async function getAllVacationsService(isUserFollow: boolean, isNotStarted: boolean, isActive: boolean): Promise<any> {
+  try {
+    const query = `?isUserFollow=${isUserFollow}&isNotStarted=${isNotStarted}&isActive=${isActive}`
+    return await axios.get(`${axiosConfig.baseUrl}/vacations${query}`, axiosConfig.options)
+      .then((result) => {
+        if (!Array.isArray(result.data)) throw new Error(`Error Please contact support ${result.headers["x-request-id"]}`)
 
-  const { data, headers } = await axios.get(`${axiosConfig.baseUrl}/vacations`, axiosConfig.options).catch((error) => {
-      if (error.response.status == 401) {
-        throw Error("401");
-      }
-      throw Error("error");
-    })
+        const vacations: Array<IVacation> = result.data.map((v) => {
+          return {
+            vacationId: v.vacationId,
+            destination: v.destination,
+            description: v.description,
+            startDate: v.startDate,
+            endDate: v.endDate,
+            price: v.price,
+            imageFileName: v.imageFileName,
+            followers: v.followers ? v.followers : 0,
+            IsUSerFollow: v.IsUSerFollow
 
-  if (!Array.isArray(data)) throw new Error(`Error Please contact support ${headers["x-request-id"]}`)
+          }
+        })
+        return vacations;
+      })
+      .catch((error) => {
+        if (error.response.status == 401) {
+          throw Error("401");
+        }
+        throw Error("error");
+      })
 
-  const vacations: Array<IVacation> = data.map((v) => {
-    return {
-      vacationId: v.vacationId,
-      destination: v.destination,
-      description: v.description,
-      startDate: v.startDate,
-      endDate: v.endDate,
-      price: v.price,
-      imageFileName: v.imageFileName,
-      followers:v.followers
 
-    }
-  })
-  return vacations;
+  }
+  catch (error: any) {
+    throw new Error(error.message);
+  }
 }
 
 export { getAllVacationsService }
