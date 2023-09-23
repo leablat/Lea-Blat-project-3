@@ -8,5 +8,10 @@ export default function checkIsAdminJwt(): boolean {
     }
     return false
 }
+//  function getJwtPaylodes(){
+//     const token = localStorage.getItem("token")
+//     return  decodeJWT(token || "")
+
+// }
 // 
-// export default {checkIsAdminJwt}
+// export default {checkIsAdminJwt ,getJwtPaylodes}

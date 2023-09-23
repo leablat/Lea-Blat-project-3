@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { IVacation } from "../service";
 import { useNavigate } from "react-router-dom";
-import { deleteVacationService } from "./service";
+import { deleteVacationService } from "./vacationCardService";
 import { addFollowerService, deleteFollowerService, getFollowerService } from "./followerServise";
 
 interface VacationCardProps {
@@ -14,7 +14,7 @@ const VacationCard = ({ vacation, loadVacations, isAdmin }: VacationCardProps) =
   const navigate = useNavigate();
   const vacationId = vacation.vacationId;
   const [isFollower, setIsFollower] = useState<boolean>(false)
-  console.log("vacationId", vacationId);
+  console.log("vacationId 1", vacationId);
 
   useEffect(() => {
     getFollower()

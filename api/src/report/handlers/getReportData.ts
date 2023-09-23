@@ -6,7 +6,7 @@ async function getReportData() {
 
     const query = `SELECT distinct
     v.destination,
-    IFNULL(likes.sum, 0) as likesCount
+    IFNULL(likes.sum, 0) as followers
     -- IFNULL(checks.isCheck, 0) as isLiked
     FROM
         vacations.vacations v

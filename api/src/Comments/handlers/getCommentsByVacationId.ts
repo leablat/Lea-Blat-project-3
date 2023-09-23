@@ -4,7 +4,7 @@ import { pool } from "../../database";
 
 async function getCommentsByVacationId(vacationId: number) {
     try {
-        console.log("vacationId", vacationId);
+        console.log("vacationId 2 ", vacationId);
 
         const result = await pool.execute(
             `SELECT users.firstName AS 'userName', comments.comment, comments.commentId

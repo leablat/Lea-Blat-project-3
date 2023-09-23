@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { IVacation } from "../service";
 import { useNavigate, useParams } from "react-router-dom";
-import { getVacationService } from "../../editVacayion/service";
-import { addCommentService, getCommentsService } from "./service";
+import { addCommentService, getCommentsService, getVacationDetailsService } from "./service";
 
 export interface IComment {
   commentId: number,
@@ -37,7 +35,7 @@ const VacationDetails = () => {
   }
   async function fetchData() {
     try {
-      const vacationData = await getVacationService(vacationId);
+      const vacationData = await getVacationDetailsService(vacationId);
       // Convert Date objects to string for default values
       vacationData.startDate = new Date(vacationData.startDate).toISOString().split("T")[0];
       vacationData.endDate = new Date(vacationData.endDate).toISOString().split("T")[0];
@@ -51,10 +49,11 @@ const VacationDetails = () => {
   };
 
   async function addComment() {
-    debugger
-    console.log("comment", comment);
-    
-    addCommentService(comment, vacation.vacationId)
+       
+   await addCommentService(comment, vacation.vacationId)
+//לסדר שיהיה בדיקה האם חזר נתונים ולתפוס בארור
+getComments();
+setComment ("");
   }
 
   return (

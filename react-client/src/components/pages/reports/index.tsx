@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale } from 'chart.js/auto'; // Import scales and other necessary modules
-import { getReportFollowersDataService } from './servise';
+import { getReportDataService } from './servise';
 
 
 // Register the scales
@@ -19,7 +19,7 @@ function VacationReport() {
   useEffect(() => {
     async function fetchReportData() {
       try {
-        const data = await getReportFollowersDataService();
+        const data = await getReportDataService();
         setReportData(data.reportData);
       } catch (error) {
         console.error('Error fetching report data:', error);

@@ -6,6 +6,7 @@ import jsonwebtoken from "jsonwebtoken";
 import { authRouter } from "./Authentication/route";
 import { followersRouter } from "./followers/route";
 import { commentsRouter } from "./Comments/route";
+import { reportsRouter } from "./report/route";
 
 dotenv.config()
 
@@ -17,7 +18,7 @@ app.use(verifyAuthentication)
 app.use("/vacations", vacationsRouter)
 app.use("/followers", followersRouter)
 app.use("/comments", commentsRouter)
-
+app.use("/reports", reportsRouter)
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     console.log({ message: err.message })

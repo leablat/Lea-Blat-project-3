@@ -1,7 +1,7 @@
 import './App.css'
 import VacationsList from './components/pages/vacations'
 import ReporstsPage from './components/pages/reports'
-import { createContext, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 import { Routes, Route, Link, useNavigate } from "react-router-dom"
 import { Button } from 'primereact/button'
 import LoginForm from './components/pages/login'
@@ -11,7 +11,8 @@ import Register from './components/pages/register';
 import AddVacation from './components/pages/addVacation';
 import EditVacation from './components/pages/editVacayion';
 import VacationDetails from './components/pages/vacations/vacationDetails'
-
+import decodeJWT from "jwt-decode"
+import { any } from 'zod'
 
 interface IRoute {
     path: string,
@@ -76,6 +77,29 @@ export const UTCContext = createContext<{ isUtc: boolean }>({ isUtc: true })
 function App() {
     const navigate = useNavigate();
     const [isUtc, setIsUtc] = useState(false)
+    const [userName , setUeserName] = useState ("lea blat")
+   
+    useEffect(() => {
+// const tokenPaylodes = getJwtPaylodes();
+    const token = localStorage.getItem("token")
+   let paylodes = {}
+   if(decodeJWT(token||"")) {
+    paylodes = decodeJWT(token||"")
+   }
+
+   console.log("paylodes",paylodes);
+   
+//   const paylodes = decodeJWT(token||"")
+const userName = ""
+if(paylodes.userName){
+    setUeserName (userName)
+
+}
+        
+        }
+    
+      , []);
+   
     function logoutHandler() {
         localStorage.removeItem("token")
 
@@ -83,6 +107,7 @@ function App() {
     }
 
     return (
+
         <UTCContext.Provider value={{ isUtc }}>
             <div>
                 <div>
@@ -108,6 +133,9 @@ function App() {
                         return <Link key={route.label} to={route.path} className="router-item"> {route.label}  </Link>
                     })}
                 </div>
+                {userName?<div>Hello {userName}</div>: ""}
+
+                
                 <Routes>
                     {routes.map((route: IRoute) => {
                         return <Route path={route.path} key={route.key} element={route.component} />

@@ -3,8 +3,8 @@ import express from "express"
 import jsonwebtoken from "jsonwebtoken"
 import zod from "zod"
 import dotenv from "dotenv"
-import { signUp } from "./handlers/signup"
 import { login } from "./handlers/login"
+import { signUp } from "./handlers/signUp"
 dotenv.config()
 const authRouter = express.Router();
 
@@ -44,15 +44,11 @@ async function loginFunc(req, res, next) {
     const { email, password } = req.body
     try {
         const { result, userRecord } = await login(email, password);
-
         if (!userRecord)
-
             return res.status(404).send("User is undefined")
         if (!result) throw new Error()
-
-        const signedToken = await jsonwebtoken.sign({ userName: userRecord.email, userId: userRecord.userId, role: userRecord.role }, process.env.SECRET)
+        const signedToken = await jsonwebtoken.sign({ userName: userRecord.firstName + " "+userRecord.lastName, userId: userRecord.userId, role: userRecord.role }, process.env.SECRET)
         console.log("signedToken",signedToken);
-        
         res.json({ token: signedToken })
     } catch (error) {
         return res.status(401).send("User is unauthorized")

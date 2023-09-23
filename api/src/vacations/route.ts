@@ -6,11 +6,14 @@ import { deletionVacation } from "./handlers/deleteVacations";
 import varifyIsAdmin from "../Authorization/handlers/varifyIsAdmin";
 import { getVacationById } from "./handlers/getVacationById";
 import { deleteFollowersByVacatuonId } from "../followers/handlers/deleteFollowersByVacatuonId";
+import { log } from "winston";
 
 
 const vacationsRouter = express.Router();
 
 vacationsRouter.get("/", getVacations)
+vacationsRouter.get("/details/:id", getVacation)
+
 vacationsRouter.use(varifyIsAdmin)
 vacationsRouter.post("/new", newVacation)
 vacationsRouter.get("/:id", getVacation)
@@ -20,14 +23,11 @@ vacationsRouter.delete("/:id", deleteVacation)
 async function getVacations(req: any, res: Response, next: NextFunction) {
 
     try {
-
         const isUSerFollow = req.query.isUserFollow =="true"? true : false;
-        
         const isNotStarted = req.query.isNotStarted=="true"? true : false;
         const isActive = req.query.isActive=="true"? true : false;
-        console.log("isUSerFollow" , isUSerFollow);
-        
         const results = await getAllVacations(req.currentUserId, isUSerFollow, isNotStarted, isActive)
+    
         res.json(results)
     } catch (error) {
         console.log(error.message)
