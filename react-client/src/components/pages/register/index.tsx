@@ -2,49 +2,54 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, FormProvider } from "react-hook-form";
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
-import { z } from "zod";
+import { TypeOf, object, string, number, coerce } from 'zod';
+import { useState } from "react";
 
-const registrationSchema = z.object({
-    email: z.string().email("Invalid email"),
-    firstName:z.string(),
-    password: z.string().min(4, "Password must be at least 6 characters"),
-    lastName: z.string()
+const registrationSchema = object({
+    email: string().email("Invalid email"),
+    firstName: string(),
+    password: string().min(4, "Password must be at least 4 characters"),
+    lastName: string()
 });
 
-type RegistrationInput = z.infer<typeof registrationSchema>;
+type RegistrationInput = TypeOf<typeof registrationSchema>;
 
 const RegistrationComponent = () => {
+    const [emailError, setEmailError] = useState("")
+
     const navigate = useNavigate()
     const methods = useForm<RegistrationInput>({
         resolver: zodResolver(registrationSchema),
     });
 
 
-    async function signUpService() {
-        const signUpPayload = {
-            email: methods.getValues("email"),
-            firstName: methods.getValues("firstName"),
-            password: methods.getValues("password"),
-            lastName: methods.getValues("lastName"),
-        }
+    const { handleSubmit } = methods;
 
+    const onSubmit = async (data: RegistrationInput) => {
         try {
-            const result = await axios.post(`http://localhost:4002/auth/sign-up`, signUpPayload)
+            const result = await axios.post(`http://localhost:4002/auth/sign-up`, data)
             alert(result.data.message)
             setTimeout(() => { navigate("/login") }, 500)
-        } catch (ex) {
+        } catch (ex: any) {
+            debugger
+            if (ex.response.status == 409) {
+                setEmailError ("this email already exists")
+            }        
+            else {
             alert("Something went wrong!")
+            }
         }
 
     }
 
     return (
         <FormProvider {...methods}>
-            <form>
+            <form id="form" onSubmit={handleSubmit(onSubmit)}>
                 <div style={{ display: "flex", flexDirection: "column" }}>
                     Email
                     <input type="email" {...methods.register("email")} />
-                    {methods.formState.errors.email && <span>{methods.formState.errors.email.message}</span>}
+                    <span className="error">{emailError}</span>
+                    {methods.formState.errors.email && <span className="error">{methods.formState.errors.email.message}</span>}
                     first name
                     <input type="text" {...methods.register("firstName")} />
                     {methods.formState.errors.firstName && <span>{methods.formState.errors.firstName.message}</span>}
@@ -57,7 +62,7 @@ const RegistrationComponent = () => {
 
 
                 </div>
-                <button type="button" onClick={signUpService}>Sign Up</button>
+                <button type="submit">Sign Up</button>
             </form>
         </FormProvider>
     );

@@ -6,7 +6,7 @@ import { editVacationService, getVacationService } from "./service";
 import { useNavigate, useParams } from "react-router-dom";
 
 const editVacationSchema = object({
-  destination: string(),
+  destination: string().nonempty("thdrt"),
   description: string(),
   startDate: date(),
   endDate: date(),
@@ -43,33 +43,45 @@ const EditVacation = () => {
     fetchData();
   }, [vacationId]);
 
-  const updateVacation = async () => {
-    try {
-      const updatedVacation = {
-        destination: methods.getValues("destination"),
-        description: methods.getValues("description"),
-        startDate: methods.getValues("startDate"),
-        endDate: methods.getValues("endDate"),
-        price: methods.getValues("price"),
-        imageFileName: methods.getValues("imageFileName"),
-      };
 
-      // Call your service to update the vacation
-      const result = await editVacationService(vacationId, updatedVacation);
+  const { handleSubmit } = methods;;
 
-      console.log("update result", result);
-      navigate("/vacations");
-    } catch (error) {
-      console.error("Error updating vacation:", error);
-    }
-  };
+  const onSubmit = async (data: editVacationInput) => {
+    const result = await editVacationService(vacationId, data);
+    console.log("update result", result);
+    navigate("/vacations");     
+  }
+  // const updateVacation = async () => {
+
+
+
+    
+  //   try {
+  //     const updatedVacation = {
+  //       destination: methods.getValues("destination"),
+  //       description: methods.getValues("description"),
+  //       startDate: methods.getValues("startDate"),
+  //       endDate: methods.getValues("endDate"),
+  //       price: methods.getValues("price"),
+  //       imageFileName: methods.getValues("imageFileName"),
+  //     };
+
+  //     // Call your service to update the vacation
+  //     const result = await editVacationService(vacationId, updatedVacation);
+
+  //     console.log("update result", result);
+  //     navigate("/vacations");
+  //   } catch (error) {
+  //     console.error("Error updating vacation:", error);
+  //   }
+  // };
 
   return (
     <div>
       <h1>Edit Vacation</h1>
       {vacation ? (
         <FormProvider {...methods}>
-          <form id="form">
+                <form id="form" onSubmit={handleSubmit(onSubmit)}>
             <div style={{ display: "flex", flexDirection: "column" }}>
               Destination
               <input
@@ -127,7 +139,7 @@ const EditVacation = () => {
                 <span>{methods.formState.errors.imageFileName.message}</span>
               )}
             </div>
-            <button type="button" onClick={updateVacation}>
+            <button type="submit" >
               Update
             </button>
           </form>

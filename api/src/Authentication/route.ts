@@ -3,7 +3,7 @@ import express from "express"
 import jsonwebtoken from "jsonwebtoken"
 import zod from "zod"
 import dotenv from "dotenv"
-import { login } from "./handlers/login"
+import { getUserByEmail, login } from "./handlers/login"
 import { signUp } from "./handlers/register"
 dotenv.config()
 const authRouter = express.Router();
@@ -69,6 +69,11 @@ function middlewareSignIn(req, res, next) {
 async function signUpFunc(req, res, next) {
     try {
         console.log("0");
+        const user = await getUserByEmail(req.body.email)
+        if(user){
+            return res.status(409).send({ message: "this email already exists" })
+  
+        }
         // const user = users.find(u => u.email === req.body?.email?.toLowerCase())
         // if (user) return res.status(409).send("user already exist")
         const result = await signUp(req.body)

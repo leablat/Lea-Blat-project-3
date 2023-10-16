@@ -21,6 +21,8 @@ async function signUp(signUpPayload: IPayload): Promise<number> {
     const hashedPassword = await getHashedPassword(password)
 console.log(hashedPassword);
 
+
+
     console.log("sign up 2");
     const query = "INSERT INTO `vacations`.`users` (`firstName`, `lastName`, `email`, `password`, `role`,`hashedPassword`, `salt`) VALUES (?,?,?,?,?,?,?)";
     const result = await pool.execute(query, [firstName, lastName, email, password, "user",hashedPassword.password,hashedPassword.salt  ])
