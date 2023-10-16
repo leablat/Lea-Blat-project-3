@@ -4,11 +4,11 @@ import jsonwebtoken from "jsonwebtoken"
 import zod from "zod"
 import dotenv from "dotenv"
 import { login } from "./handlers/login"
-import { signUp } from "./handlers/signUp"
+import { signUp } from "./handlers/register"
 dotenv.config()
 const authRouter = express.Router();
 
-authRouter.get("/test", test)
+// authRouter.get("/test", test)
 authRouter.post("/login", loginFunc)
 authRouter.post("/sign-up", signUpFunc)
 

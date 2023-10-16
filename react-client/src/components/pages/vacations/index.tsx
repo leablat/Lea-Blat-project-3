@@ -59,8 +59,9 @@ export default function VacationsList() {
 
   }
 
+ 
   function checkIsAdmin() {
-    setIsAdmin(checkIsAdminJwt())
+    setIsAdmin(checkIsAdminJwt.checkIsAdminJwt())
   }
 
   const downloadAllVacationsCSV = () => {

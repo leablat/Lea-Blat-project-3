@@ -1,4 +1,5 @@
-import { pool } from "../../database";
+import { pool } from "../../../../database"
+
 
 async function addComment(vacationId: number, comment: string, userId: number): Promise<number> {
     try {

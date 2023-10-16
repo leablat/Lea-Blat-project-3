@@ -1,5 +1,5 @@
-import { pool } from "../../database"
-import { getHashedPassword } from "./signUp"
+import { pool } from "../../../../database"
+import { getHashedPassword } from "./register"
 export async function getUserByEmail(email: string): Promise<any> {
     if (!email) throw new Error("getUserByEmail() Fn missing Email")
     const query = `SELECT * FROM vacations.users where email = ?`

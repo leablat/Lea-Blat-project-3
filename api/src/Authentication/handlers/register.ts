@@ -1,6 +1,6 @@
 import { signupSchema } from "../route"
 import bcrypt from "bcrypt";
-import { pool } from "../../database"
+import { pool } from "../../../../database"
 import { ResultSetHeader } from "mysql2"
 import dotenv from "dotenv"
 import express from "express";

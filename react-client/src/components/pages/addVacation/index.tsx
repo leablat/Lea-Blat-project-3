@@ -5,7 +5,7 @@ import { addNewVacationService } from "./service";
 import { useNavigate } from "react-router-dom";
 
 const newVacationSchema = object({
-    destination: string(),
+    destination: string().nonempty("must be fiiled!"),
     description: string(),
     startDate: date(),
     endDate: date(),
@@ -23,7 +23,7 @@ const AddVacation = () => {
 
     async function addNewVacation() {
         const vacation = {
-            destination: methods.getValues("destination"),
+            destination: methods.getValues().destination,
             description: methods.getValues("description"),
             startDate: methods.getValues("startDate"),
             endDate: methods.getValues("endDate"),
@@ -32,7 +32,7 @@ const AddVacation = () => {
         };
 
         console.log("add vacation", vacation);
-
+debugger
         const result = await addNewVacationService(vacation);
         console.log( "result" ,result);
         navigate("/vacations")

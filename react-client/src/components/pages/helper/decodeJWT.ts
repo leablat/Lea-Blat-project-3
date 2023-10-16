@@ -1,17 +1,19 @@
 import decodeJWT from "jwt-decode"
 
-export default function checkIsAdminJwt(): boolean {
+const checkIsAdminJwt: any = function() {
     const token = localStorage.getItem("token")
     const JwtPayload: any = decodeJWT(token || "")
-    if (JwtPayload?.role =="admin") {
+    if (JwtPayload?.role == "admin") {
         return true
     }
     return false
 }
-//  function getJwtPaylodes(){
-//     const token = localStorage.getItem("token")
-//     return  decodeJWT(token || "")
+const getJwtPayloads: any = function() {
+    const token = localStorage.getItem("token")
+    if (token)
+        return decodeJWT(token || "")
+    return {}
+}
 
-// }
-// 
-// export default {checkIsAdminJwt ,getJwtPaylodes}
+export default { checkIsAdminJwt, getJwtPayloads }
+

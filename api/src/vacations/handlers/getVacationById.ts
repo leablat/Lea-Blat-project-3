@@ -1,6 +1,7 @@
 
 
-import { pool } from "../../database";
+import { pool } from "../../../../database"
+
 
 
 async function getVacationById(vacationId:number){

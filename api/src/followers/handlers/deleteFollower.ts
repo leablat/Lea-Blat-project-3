@@ -1,5 +1,5 @@
 import { ResultSetHeader } from "mysql2";
-import { pool } from "../../database";
+import { pool } from "../../../../database"
 
 
 async function deletionFollower(vacationId: number, userId: number) {

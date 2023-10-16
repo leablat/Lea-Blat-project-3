@@ -1,4 +1,5 @@
-import { pool } from "../../database";
+import { pool } from "../../../../database"
+
 import { ResultSetHeader } from "mysql2";
 
 export interface IVacation {
