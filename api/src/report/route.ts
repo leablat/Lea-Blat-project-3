@@ -8,16 +8,13 @@ reportsRouter.get("/", getReports);
 
 async function getReports(req: any, res: Response, next: NextFunction) {
     try {
-
-console.log("get report");
-
         const reportData = await getReportData();
-        res.json({ reportData: reportData });
+        return res.json({ reportData: reportData });
     } catch (error) {
-        console.log(error.message);
-        return next(error);
+        res.status(500).send("get reports failed" + error)
     }
 }
+
 
 
 

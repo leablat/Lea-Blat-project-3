@@ -1,83 +1,116 @@
 import { useCallback, useEffect, useState } from 'react';
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
+import { TypeOf, date, object, string } from 'zod';
+import { type } from 'os';
+import { FormProvider, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+const loginSchema = object({
+    email: string().email("Invalid email"),
+    password: string().min(4, "Password must be at least 4 characters"),
+})
+
+type loginInput = TypeOf<typeof loginSchema>;
 
 const LoginForm = () => {
     const navigate = useNavigate()
-    const [email, setEmail] = useState('initEmail');
     const [errorMessage, setErrorMessage] = useState('');
-    const [password, setPassword] = useState('initPassword');
-    // const testRef = useRef()
-    // console.log("SET EMAIL OR SET PASSWORD MADE RENDER - NOW LETS DECLARE : [handleEmailChange && handlePasswordChange] ")
+    const [emailError, setEmailError] = useState("")
 
 
-    const handleEmailChangeCallback = useCallback((e: any) => {
-        setEmail(e.target.value)
-    }, [email])
+    const methods = useForm<loginInput>({
+        resolver: zodResolver(loginSchema)
+    })
 
-    const handlePasswordChangeCallback = useCallback(
-        (e: any) => {
-            console.log(`the passowrd is: ${e.target.value}`)
-            console.log(`the email is: ${email}`)
-            setPassword(e.target.value);
-        },
-        [password]
-    )
+  
+    const { handleSubmit } = methods;
 
-    // const handleEmailChangeCallback = (e: any) => {
-    //     setEmail(e.target.value)
-    // }
-
-    // const handlePasswordChangeCallback = (e: any) => {
-    //     console.log(`the passowrd is: ${e.target.value}`)
-    //     console.log(`the email is: ${email}`)
-    //     setPassword(e.target.value);
-    // }
-
-
-
-
-    // const handlePasswordChange = (e: any) => {
-    //     setPassword(e.target.value);
-    // };
-
-    useEffect(() => {
-        return () => {
-            console.log("Unmount Login Component Now!!!!")
-        }
-    }, [])
-
-    async function loginService() {
-        const loginPayload = {
-            email,
-            password
-        }
+    const onSubmit = async (data: loginInput) => {
         try {
-            await axios.post("http://localhost:4002/auth/login", loginPayload)
-            .then((result: any) => {
-                localStorage.setItem("token", result.data.token)
-                setTimeout(() => { navigate("/vacations") }, 500)
-            })
-            .catch((error) => {
-                if (error.response.status == 404) {
-                    setErrorMessage("User does not exist in the system!")
+            
+            const result = await axios.post("http://localhost:4002/auth/login", data)
+
+            localStorage.setItem("token", result.data.token)
+            setTimeout(() => { navigate("/vacations") }, 1000)
+        } catch (error: any) {
+            if (error.response.status == 404) {
+                setErrorMessage("User does not exist in the system!")
+            }else{
+                if (error.response.status == 401) {
+    
+                    setErrorMessage("email / pasword is not corect !")
                 }
-            })
+    
+                else {
+                    alert("Something went wrong!")
+    
+                }
+            }
           
-        } catch (ex) {
-            alert("Something went wrong!")
         }
+
     }
 
-    function newUser (){
+    function newUser() {
         navigate("/register")
     }
 
+
     return (
-        <form >
-            {/* <h2>Login</h2> */}
-            <br></br>
-            <div>
+        <FormProvider {...methods} >
+            <form id="form" onSubmit={handleSubmit(onSubmit)}>
+                <div style={{ display: "flex", flexDirection: "column" }}>
+
+
+                    Email
+                    <input type="email" {...methods.register("email")} />
+                    <span className="error">{emailError}</span>
+                    {methods.formState.errors.email && <span className="error">{methods.formState.errors.email.message}</span>}
+                    Password
+                    <input type="password" {...methods.register("password")} />
+                    {methods.formState.errors.password && <span className="error">{methods.formState.errors.password.message}</span>}
+
+                </div>
+
+             <span className='error'> {errorMessage}</span>  
+
+                <button type="submit">Sign In</button>
+
+                <br></br>
+                <button type="button" onClick={newUser}>New user</button>
+
+            </form>
+        </FormProvider>
+    );
+};
+
+// async function loginService() {
+//     const loginPayload = {
+//         email,
+//         password
+//     }
+//     try {
+//         await axios.post("http://localhost:4002/auth/login", loginPayload)
+//             .then((result: any) => {
+//                 localStorage.setItem("token", result.data.token)
+//                 setTimeout(() => { navigate("/vacations") }, 500)
+//             })
+//             .catch((error) => {
+//                 if (error.response.status == 404) {
+//                     setErrorMessage("User does not exist in the system!")
+//                 }
+//             })
+
+//     } catch (ex) {
+//         alert("Something went wrong!")
+//     }
+// }
+
+
+
+{/* <br></br> */ }
+{/* <div style={{ display: "flex", flexDirection: "column" }}>
                 <label htmlFor="email">Email:</label>
                 <input
                     type="email"
@@ -96,8 +129,8 @@ const LoginForm = () => {
                     onChange={handlePasswordChangeCallback}
                     required
                 />
-            </div>
-            {/* <div>
+            </div> */}
+{/* <div>
                 <label htmlFor="password">Test</label>
                 <input
                     type="test"
@@ -106,15 +139,5 @@ const LoginForm = () => {
                     required
                 />
             </div> */}
-            <button type="button" onClick={loginService}>Login</button>
-<br></br>
-<div>  {errorMessage}</div>   
-
-<br></br>
-<button type="button" onClick={newUser}>New user</button>
-
-        </form>
-    );
-};
 
 export default LoginForm;

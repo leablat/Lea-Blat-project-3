@@ -20,24 +20,16 @@ app.use("/followers", followersRouter)
 app.use("/comments", commentsRouter)
 app.use("/reports", reportsRouter)
 
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    console.log({ message: err.message })
-    res.status(500).send("Something went wrong")
-})
-
 app.listen(process.env.PORT, () => {
    console.log({ message: `Api is running on Port ${process.env.PORT}` })
 })
 
 function verifyAuthentication(req: Request, res: Response, next) {
     const { authorization: token } = req.headers
-    
     jsonwebtoken.verify(token, process.env.SECRET, function (err, decoded: any) {
         if (err) {
             return res.status(401).send("Authentication error")
         } else {
-            
-            
             (req as any).currentUserName = decoded.userName;
             (req as any).currentUserId = decoded.userId;
             (req as any).currentUserRole = decoded.role;

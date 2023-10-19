@@ -2,30 +2,28 @@ import './App.css'
 import VacationsList from './components/pages/vacations'
 import ReporstsPage from './components/pages/reports'
 import { createContext, useEffect, useState } from 'react'
-import { Routes, Route, Link, useNavigate } from "react-router-dom"
+import { Routes, Route, Link, useNavigate, RouteObject } from "react-router-dom"
 import { Button } from 'primereact/button'
 import LoginForm from './components/pages/login'
-// import NotFound from './components/pages/not-found'
-// import RegistrationComponent from './components/pages/signup'
 import Register from './components/pages/register';
 import AddVacation from './components/pages/addVacation';
 import EditVacation from './components/pages/editVacayion';
 import VacationDetails from './components/pages/vacations/vacationDetails'
-import decodeJWT from './components/pages/helper/decodeJWT'
+import { checkIsAdminJwt, getJwtPayloads } from './components/pages/helper/decodeJWT'
 
 interface IRoute {
     path: string,
     key: string,
     component: any,
     label?: string,
-    onlyAdmin?: boolean
+    onlyAdmin?: boolean,
+    role?: boolean
 }
 const routes: Array<IRoute> = [
     {
         path: "/register",
         component: <Register />,
         key: "register",
-
     },
     {
         path: "/login",
@@ -43,7 +41,6 @@ const routes: Array<IRoute> = [
         component: <EditVacation></EditVacation>,
         key: "editVacation",
     },
-
     {
         path: "/vacations",
         component: <VacationsList />,
@@ -59,16 +56,9 @@ const routes: Array<IRoute> = [
         path: "/reports",
         component: <ReporstsPage />,
         key: "reports",
-        label: "Reports"
+        label: "Reports",
+        role: true
     },
-
-
-    // {
-    //     path: "*",
-    //     component: <NotFound />,
-    //     key: "not found",
-    // }
-
 ]
 export const UTCContext = createContext<{ isUtc: boolean }>({ isUtc: true })
 
@@ -78,76 +68,47 @@ function App() {
     const [isUtc, setIsUtc] = useState(false)
     const [userName, setUserName] = useState("lea blat")
 
-    
     useEffect(() => {
-        const tokenPaylodes = decodeJWT.getJwtPayloads()        
+        const tokenPaylodes: any = getJwtPayloads()
         setUserName(tokenPaylodes?.userName)
-        console.log("userName",userName);
-        
+        console.log("userName", userName);
     }, []);
 
+    function logoutHandler() {
+        localStorage.removeItem("token")
+        setUserName("");
+        navigate("/login")
+    }
 
-
-  
-
-
-
-
-        function logoutHandler() {
-            localStorage.removeItem("token")
-            setUserName("");
-            navigate("/login")
-        }
-
-        return (
-
-            <UTCContext.Provider value={{ isUtc }}>
-                <div>
-                    <div>
-                        {/* <h5>  Utc time?</h5>
-                    <InputSwitch checked={isUtc} onChange={(__avi_stop__) => { */}
-                        {/* setIsUtc(!isUtc)
-                    }} /> */}
-                    </div>
-                    {/* <div>
-                    <h5>  Format? Use DateFNS - https://date-fns.org/v1.29.0/docs/format</h5>
-                    <div>
-                        <input id="formatA" type='radio' name="format" /> yyyy-MMM-dd HH:mm:SS
-                    </div>
-                    <div>
-                        <input id="formatB" type='radio' name="format" /> yy/MM/dd HH:mm:SS
-                    </div>
-                </div> */}
-                    <div style={{ width: "100%", top: 0, left: 0, position: "absolute", textAlign: "right" }}>
-                        <Button onClick={logoutHandler}> Log Out</Button>
-                    </div>
-                    <div style={{ marginTop: "50px" }}>
-                        {routes.filter(showRoutesPerRole).filter(r => r.label).map((route: IRoute) => {
-                            return <Link key={route.label} to={route.path} className="router-item"> {route.label}  </Link>
-                        })}
-                    </div>
-                    {userName ? <div>Hello {userName}</div> : ""}
-
-
-                    <Routes>
-                        {routes.map((route: IRoute) => {
-                            return <Route path={route.path} key={route.key} element={route.component} />
-                        })}
-                    </Routes>
+    function showRoutesPerRole(role?: boolean) {
+        if (!checkIsAdminJwt() && role === true)
+            return false 
+        return true
+    }
+    
+    return (
+        <UTCContext.Provider value={{ isUtc }}>
+            <div>
+                <div style={{ width: "100%", top: 0, left: 0, position: "absolute", textAlign: "right" }}>
+                    <Button onClick={logoutHandler}> Log Out</Button>
                 </div>
-            </UTCContext.Provider>
-        )
-    }
+                <div style={{ marginTop: "50px" }}>
+                    {routes.filter((r: IRoute) => r.label && showRoutesPerRole(r.role)).map((route: IRoute) => {
+                        return <Link key={route.label} to={route.path} className="router-item"> {route.label}  </Link>
+                    })}
+                </div>
+                {userName ? <div>Hello {userName}</div> : ""}
+                <Routes>
+                    {routes.map((route: IRoute) => {
+                        return <Route path={route.path} key={route.key} element={route.component} />
+                    })}
+                </Routes>
+            </div>
+        </UTCContext.Provider>
+    )
+}
 
-    function showRoutesPerRole(route: IRoute) {
-        return true;
-        // check only users that have admin OR regular users.
 
-        // if (localStorage.getItem("role") !== "admin") return true
-        // return route.onlyAdmin && localStorage.getItem("role") === "admin"
-    }
-
-
-    export default App
+export default App
 
 

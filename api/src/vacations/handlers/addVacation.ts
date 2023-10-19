@@ -14,11 +14,7 @@ export interface IVacation {
 
 async function addVacation(vacation: IVacation): Promise<number> {
     try {
-        
-        const query =
-            "INSERT INTO `vacations`.`vacations` (`destination`, `description`, `startDate`,`endDate`, `price`,`imageFileName`) VALUES (?,?,?,?,?,?);";
-
-        
+        const query = "INSERT INTO `vacations`.`vacations` (`destination`, `description`, `startDate`,`endDate`, `price`,`imageFileName`) VALUES (?,?,?,?,?,?);";
         const results = await pool.execute(query, [
             vacation.destination,
             vacation.description,
@@ -27,11 +23,9 @@ async function addVacation(vacation: IVacation): Promise<number> {
             vacation.price,
             vacation.imageFileName,
         ]);
-
         const [data] = results;
         return (data as ResultSetHeader).insertId;
     } catch (error) {
-        console.error("Error executing MySQL query:", error);
         throw new Error("Failed to add vacation");
     }
 }

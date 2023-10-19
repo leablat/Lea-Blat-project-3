@@ -1,22 +1,23 @@
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
-import { TypeOf, date, object, string } from "zod";
+import { TypeOf, coerce, date, object, string } from "zod";
 import { editVacationService, getVacationService } from "./service";
 import { useNavigate, useParams } from "react-router-dom";
 
 const editVacationSchema = object({
-  destination: string().nonempty("thdrt"),
-  description: string(),
-  startDate: date(),
-  endDate: date(),
-  price: string(),
-  imageFileName: string(),
+  destination: string().nonempty('destination must be filled!'),
+  description: string().nonempty('description must be filled!'),
+  startDate: coerce.date(),
+  endDate: coerce.date(),
+  price: coerce.number().nonnegative("canot get negative price").min(1, "price must be filled!").max(10000, "canot get more than 10,000"), imageFileName: string(),
 });
 
 type editVacationInput = TypeOf<typeof editVacationSchema>;
 
 const EditVacation = () => {
+  const [correctDate, setCorrectDate] = useState("")
+
   const navigate = useNavigate();
   const { vacationId } = useParams();
 
@@ -47,41 +48,34 @@ const EditVacation = () => {
   const { handleSubmit } = methods;;
 
   const onSubmit = async (data: editVacationInput) => {
-    const result = await editVacationService(vacationId, data);
-    console.log("update result", result);
-    navigate("/vacations");     
+    const formattedData = {
+      ...data,
+      startDate: new Date(data.startDate).toISOString().slice(0, 10),
+      endDate: new Date(data.endDate).toISOString().slice(0, 10)
+    };
+    console.log('add vacation', formattedData);
+    if (formattedData.endDate < formattedData.startDate) {
+      setCorrectDate('End date cannot be earlier than start date.');
+    } else {
+      try {
+        const result = await editVacationService(vacationId, formattedData);
+        console.log('result', result);
+        navigate('/vacations');
+      } catch (error) {
+        console.error('Failed to add vacation', error);
+      }
+    }
+
+
   }
-  // const updateVacation = async () => {
 
-
-
-    
-  //   try {
-  //     const updatedVacation = {
-  //       destination: methods.getValues("destination"),
-  //       description: methods.getValues("description"),
-  //       startDate: methods.getValues("startDate"),
-  //       endDate: methods.getValues("endDate"),
-  //       price: methods.getValues("price"),
-  //       imageFileName: methods.getValues("imageFileName"),
-  //     };
-
-  //     // Call your service to update the vacation
-  //     const result = await editVacationService(vacationId, updatedVacation);
-
-  //     console.log("update result", result);
-  //     navigate("/vacations");
-  //   } catch (error) {
-  //     console.error("Error updating vacation:", error);
-  //   }
-  // };
 
   return (
     <div>
       <h1>Edit Vacation</h1>
       {vacation ? (
         <FormProvider {...methods}>
-                <form id="form" onSubmit={handleSubmit(onSubmit)}>
+          <form id="form" onSubmit={handleSubmit(onSubmit)}>
             <div style={{ display: "flex", flexDirection: "column" }}>
               Destination
               <input
@@ -90,7 +84,7 @@ const EditVacation = () => {
                 defaultValue={vacation.destination}
               />
               {methods.formState.errors.destination && (
-                <span>{methods.formState.errors.destination.message}</span>
+                <span className="error">{methods.formState.errors.destination.message}</span>
               )}
               Description of the vacation
               <input
@@ -99,25 +93,27 @@ const EditVacation = () => {
                 defaultValue={vacation.description}
               />
               {methods.formState.errors.description && (
-                <span>{methods.formState.errors.description.message}</span>
+                <span className="error">{methods.formState.errors.description.message}</span>
               )}
               Start Date
               <input
                 type="date"
                 {...methods.register("startDate")}
-                defaultValue={vacation.startDate as any} 
+                defaultValue={vacation.startDate as any}
               />
               {methods.formState.errors.startDate && (
-                <span>{methods.formState.errors.startDate.message}</span>
+                <span className="error">{methods.formState.errors.startDate.message}</span>
               )}
               End Date
               <input
                 type="date"
                 {...methods.register("endDate")}
-                defaultValue={vacation.endDate as any} 
+                defaultValue={vacation.endDate as any}
               />
+              <span className="error">{correctDate}</span>
+
               {methods.formState.errors.endDate && (
-                <span>{methods.formState.errors.endDate.message}</span>
+                <span className="error">{methods.formState.errors.endDate.message}</span>
               )}
 
               Price
@@ -127,7 +123,7 @@ const EditVacation = () => {
                 defaultValue={vacation.price}
               />
               {methods.formState.errors.price && (
-                <span>{methods.formState.errors.price.message}</span>
+                <span className="error">{methods.formState.errors.price.message}</span>
               )}
               Image
               <input

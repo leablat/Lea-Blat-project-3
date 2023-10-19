@@ -1,21 +1,24 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormProvider, useForm } from 'react-hook-form';
-import { TypeOf, object, string, date, number, coerce } from 'zod';
+import { TypeOf, object, string, coerce } from 'zod';
 import { addNewVacationService } from './service';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 const newVacationSchema = object({
     destination: string().nonempty('destination must be filled!'),
     description: string().nonempty('description must be filled!'),
     startDate: coerce.date().min(new Date(Date.now()), 'Start date must be after today'),
-    endDate: coerce.date(),// string().nonempty().transform((str) => new Date(str)),
-    price: coerce.number().nonnegative("canot get negative price").max(10000, "canot get more than 10,000"),
+    endDate: coerce.date(),
+    price: coerce.number().nonnegative("canot get negative price").min(1,"price must be filled!").max(10000, "canot get more than 10,000"),
     imageFileName: string().nonempty('imageFileName must be filled!'),
 });
 
 type newVacationInput = TypeOf<typeof newVacationSchema>;
 
 const AddVacation = () => {
+    const [correctDate, setCorrectDate] = useState("")
+
     const navigate = useNavigate();
     const methods = useForm<newVacationInput>({
         resolver: zodResolver(newVacationSchema),
@@ -24,16 +27,28 @@ const AddVacation = () => {
     const { handleSubmit } = methods;
 
     const onSubmit = async (data: newVacationInput) => {
-        console.log('add vacation', data);
-        if (data.endDate< data.startDate) {
-            window.alert("End date cannot be earlier than start date.");
+        // Format the date to the desired format
+        const formattedData = {
+            ...data,
+            startDate: new Date(data.startDate).toISOString().slice(0, 10),
+            endDate: new Date(data.endDate).toISOString().slice(0, 10)
+        };
+    
+        console.log('add vacation', formattedData);
+    
+        if (formattedData.endDate < formattedData.startDate) {
+            setCorrectDate('End date cannot be earlier than start date.');
+        } else {
+            try {
+                const result = await addNewVacationService(formattedData);
+                console.log('result', result);
+                navigate('/vacations');
+            } catch (error) {
+                console.error('Failed to add vacation', error);
+            }
         }
-
-        // console.log("formState", formState);
-        const result = await addNewVacationService(data);
-        console.log('result', result);
-        navigate('/vacations');
     };
+    
 
     return (
         <div>
@@ -58,6 +73,7 @@ const AddVacation = () => {
                         )}
                         End Date
                         <input type="date" {...methods.register('endDate')} />
+                        <span className="error">{correctDate}</span>
                         {methods.formState.errors.endDate && (
                             <span className="error">{methods.formState.errors.endDate.message}</span>
                         )}

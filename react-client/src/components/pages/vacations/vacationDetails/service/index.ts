@@ -1,12 +1,12 @@
 import axios from "axios";
-import axiosConfig from "../../../helper/httpConfig";
 import { IComment } from "..";
+import { axiosConfig } from "../../../helper/httpConfig";
 async function getVacationDetailsService(vacationId:any) {
   try {
     console.log(axiosConfig);
     
     // const url = `${axiosConfig.baseUrl}/vacations/${vacationId}`;
-    const { data } = await axios.get(`${axiosConfig.baseUrl}/vacations/details/${vacationId}`, axiosConfig.options);
+    const { data } = await axios.get(`${axiosConfig().baseUrl}/vacations/details/${vacationId}`, axiosConfig().options);
 
     if (!data) {
       throw new Error(`Vacation with ID ${vacationId} not found`);
@@ -34,7 +34,7 @@ async function addCommentService(comment: string, vacationId: number) {
 console.log("addCommentService", comment );
 
   try {
-    await axios.post(`${axiosConfig.baseUrl}/comments/${vacationId}`, { comment }, axiosConfig.options)
+    await axios.post(`${axiosConfig().baseUrl}/comments/${vacationId}`, { comment }, axiosConfig().options)
       .then((response) => {
    
 
@@ -59,7 +59,7 @@ console.log("addCommentService", comment );
 
 async function getCommentsService(vacationId: any) {
   try {
-    return await axios.get(`${axiosConfig.baseUrl}/comments/${vacationId}`, axiosConfig.options)
+    return await axios.get(`${axiosConfig().baseUrl}/comments/${vacationId}`, axiosConfig().options)
       .then((res) => {
         const comments: Array<IComment> = res.data.map((c: IComment) => {
           return {

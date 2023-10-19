@@ -2,10 +2,8 @@ import { ResultSetHeader } from "mysql2";
 import { pool } from "../../../../database"
 
 
-async function deleteFollowersByVacatuonId(vacationId: number) {
+async function deleteFollowersByVacationId(vacationId: number) {
     try {
-        console.log(vacationId);
-
         const [deleteFollowers] = await pool.execute(
             'DELETE FROM followers WHERE vacationId =? ',
             [vacationId]
@@ -13,16 +11,10 @@ async function deleteFollowersByVacatuonId(vacationId: number) {
         if ((deleteFollowers as ResultSetHeader).affectedRows === 0) {
             throw new Error(`Vacation with ID ${vacationId} not found.`);
         }
-
     }
     catch (error) {
-        console.log(error);
-        
-        throw  Error(`Vacation with ID ${vacationId} not found.`);
-
+        throw Error(`Vacation with ID ${vacationId} not found.`);
     }
-
-
 }
 
-export {deleteFollowersByVacatuonId }
+export { deleteFollowersByVacationId as deleteFollowersByVacatuonId }

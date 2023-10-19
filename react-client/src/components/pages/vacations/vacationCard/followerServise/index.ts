@@ -1,11 +1,11 @@
 import axios from "axios";
-import axiosConfig from "../../../helper/httpConfig";
+import { axiosConfig } from "../../../helper/httpConfig";
 
 async function getFollowerService(vacationId: Number) {
     try {
         // const navigate = useNavigate()
 
-        return await axios.get(`${axiosConfig.baseUrl}/followers/${vacationId}`, axiosConfig.options)
+        return await axios.get(`${axiosConfig().baseUrl}/followers/${vacationId}`, axiosConfig().options)
             .then((res) => {
 
                 return res.data
@@ -31,7 +31,7 @@ async function deleteFollowerService(vacationId: Number) {
     try {
         // const navigate = useNavigate()
 
-        const response = await axios.delete(`${axiosConfig.baseUrl}/followers/${vacationId}`, axiosConfig.options).catch((error) => {
+        const response = await axios.delete(`${axiosConfig().baseUrl}/followers/${vacationId}`, axiosConfig().options).catch((error) => {
             if (error.response.status == 401) {
                 // navigate("/login")
 
@@ -59,7 +59,7 @@ async function addFollowerService(vacationId: Number) {
     try {
         // const navigate = useNavigate()
 
-        const response = await axios.post(`${axiosConfig.baseUrl}/followers/new`, { vacationId: vacationId }, axiosConfig.options).catch((error) => {
+        const response = await axios.post(`${axiosConfig().baseUrl}/followers/new`, { vacationId: vacationId }, axiosConfig().options).catch((error) => {
             if (error.response.status == 401) {
                 // navigate("/login")
 

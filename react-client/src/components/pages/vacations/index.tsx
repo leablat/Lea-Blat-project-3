@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { IVacation, getAllVacationsService } from "./service";
 import VacationCard from "./vacationCard";
 import { useNavigate } from "react-router-dom";
-import checkIsAdminJwt from "../../pages/helper/decodeJWT"
+import {checkIsAdminJwt} from "../../pages/helper/decodeJWT"
 import Pagination from "./Pagination";
 
 export default function VacationsList() {
@@ -17,6 +17,7 @@ export default function VacationsList() {
   const vacationsPerPage = 10; 
 
   async function getVacations(isUserFollow: boolean = false, isNotStarted: boolean = false, isActive: boolean = false) {
+    
     await getAllVacationsService(isUserFollow, isNotStarted, isActive).then((result: any) => {
       setVacations(result);
     }).catch((error) => {
@@ -61,7 +62,7 @@ export default function VacationsList() {
 
  
   function checkIsAdmin() {
-    setIsAdmin(checkIsAdminJwt.checkIsAdminJwt())
+    setIsAdmin(checkIsAdminJwt())
   }
 
   const downloadAllVacationsCSV = () => {
@@ -98,8 +99,6 @@ export default function VacationsList() {
 
   return (
     <div>
-
-
       <br />
       <div className="form-check" >
         <label className="form-check-label" htmlFor="isUserFollow" >

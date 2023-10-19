@@ -1,5 +1,5 @@
 import axios from "axios";
-import axiosConfig from "../../helper/httpConfig";
+import {axiosConfig} from "../../helper/httpConfig";
 
 
 
@@ -14,7 +14,7 @@ async function addNewVacationService(vacation: any) {
     }
     console.log(vacation);
 
-    const { data } = await axios.post(`${axiosConfig.baseUrl}/vacations/new`, vacation, axiosConfig.options)
+    const { data } = await axios.post(`${axiosConfig().baseUrl}/vacations/new`, vacation, axiosConfig().options)
     return data;
   }
   catch (e) {
