@@ -17,16 +17,16 @@ export default function VacationsList() {
   const vacationsPerPage = 10;
 
   async function getVacations(isUserFollow: boolean = false, isNotStarted: boolean = false, isActive: boolean = false) {
-
-    await getAllVacationsService(isUserFollow, isNotStarted, isActive).then((result: any) => {
+    try {
+      const result = await getAllVacationsService(isUserFollow, isNotStarted, isActive)
       setVacations(result);
-    }).catch((error) => {
+    }
+    catch (error: any) {
       if (error.message == '401') {
         navigate('/login')
       }
-      else
-        alert(error)
-    });
+      alert(error)
+    }
   }
 
   async function initData() {
