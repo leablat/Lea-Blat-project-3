@@ -1,43 +1,73 @@
+import express from "express";
+import jsonwebtoken from "jsonwebtoken";
+import dotenv from "dotenv";
+import { getUserByEmail, login } from "./handlers/login";
+import { signUp } from "./handlers/register";
+import { object, string } from "zod";
 
-import express from "express"
-import jsonwebtoken from "jsonwebtoken"
-import dotenv from "dotenv"
-import { getUserByEmail, login } from "./handlers/login"
-import { signUp } from "./handlers/register"
-dotenv.config()
+dotenv.config();
 const authRouter = express.Router();
 
-authRouter.post("/login", loginFunc)
-authRouter.post("/sign-up", signUpFunc)
+const loginSchema = object({
+  email: string().email(),
+  password: string().min(4),
+});
+
+const signUpSchema = object({
+  email: string().email(),
+  password: string().min(4),
+  firstName: string().min(2),
+  lastName: string().min(2),
+});
+
+authRouter.post("/login", loginFunc);
+authRouter.post("/sign-up", signUpFunc);
 
 async function loginFunc(req, res, next) {
-    const { email, password } = req.body
-    if (!email || !password)
-        throw new Error()
-    try {
-        const userRecord = await login(email, password);
-        if (!userRecord)
-            return res.status(404).send("User is undefined")
-        const signedToken = await jsonwebtoken.sign({ userName: userRecord.firstName + " " + userRecord.lastName, userId: userRecord.userId, role: userRecord.role }, process.env.SECRET)
-        res.json({ token: signedToken })
-    } catch (error) {
-        return res.status(401).send("User is unauthorized")
+  try {
+    loginSchema.parse(req.body);
+  } catch (error) {
+    return res.status(400).send(error.errors);
+  }
+  const { email, password } = req.body;
+  try {
+    const userRecord = await login(email, password);
+    console.log(
+    userRecord)
+    if (!userRecord) return res.status(404).send("User is undefined");
+    if (userRecord.password !== password) {
+      return res.status(401).send("Password is not correct");
     }
+    const signedToken = await jsonwebtoken.sign(
+      {
+        userName: userRecord.firstName + " " + userRecord.lastName,
+        userId: userRecord.userId,
+        role: userRecord.role,
+      },
+      process.env.SECRET
+    );
+    res.json({ token: signedToken });
+  } catch (error) {
+    return res.status(500).send("Something went wrong");
+  }
 }
 
 async function signUpFunc(req, res, next) {
-    if (!req.body.email || !req.body.password || !req.body.firstName || !req.body.lastName)
-        throw new Error()
-    try {
-        const user = await getUserByEmail(req.body.email)
-        if (user) {
-            return res.status(409).send({ message: "this email already exists" })
-        }
-        const result = await signUp(req.body)
-        return res.json({ message: "user successfully added!" })
-    } catch (error) {
-        return next(error)
+  try {
+    signUpSchema.parse(req.body);
+  } catch (error) {
+    return res.status(400).send(error.errors);
+  }
+  try {
+    const user = await getUserByEmail(req.body.email);
+    if (user) {
+      return res.status(409).send({ message: "This email already exists" });
     }
+    const result = await signUp(req.body);
+    return res.json({ message: "User successfully added!" });
+  } catch (error) {
+    return next(error);
+  }
 }
 
 export { authRouter };

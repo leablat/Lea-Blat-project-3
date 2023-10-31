@@ -15,11 +15,10 @@ export interface IVacation {
 async function getAllVacationsService(isUserFollow: boolean, isNotStarted: boolean, isActive: boolean): Promise<any> {
   try {
     const query = `?isUserFollow=${isUserFollow}&isNotStarted=${isNotStarted}&isActive=${isActive}`
-    return await axios.get(`${axiosConfig().baseUrl}/vacations${query}`, axiosConfig().options)
-      .then((result) => {
-        if (!Array.isArray(result.data)) throw new Error(`Error Please contact support ${result.headers["x-request-id"]}`)
+    const {data} =  await axios.get(`${axiosConfig().baseUrl}/vacations${query}`, axiosConfig().options)
+        if (!Array.isArray(data)) throw new Error(`Error`)
 
-        const vacations: Array<IVacation> = result.data.map((v) => {
+        const vacations: Array<IVacation> = data.map((v) => {
           return {
             vacationId: v.vacationId,
             destination: v.destination,
@@ -34,18 +33,12 @@ async function getAllVacationsService(isUserFollow: boolean, isNotStarted: boole
           }
         })
         return vacations;
-      })
-      .catch((error) => {
-        if (error.response.status == 401) {
-          throw Error("401");
-        }
-        throw Error("error");
-      })
-
-
   }
   catch (error: any) {
-    throw new Error(error.message);
+    if (error.response.status == 401) {
+      throw Error("401");
+    }
+    throw Error("error");
   }
 }
 

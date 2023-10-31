@@ -22,7 +22,7 @@ async function getComments(req: any, res: Response, next: NextFunction) {
 
 async function addNewComment(req: any, res: Response, next: NextFunction) {
     const vacationId = Number(req.params.vacationId);
-    const comment = req.body
+    const comment = req.body.comment
     const userId = req.currentUserId
     try {
         await addComment(vacationId, comment, userId)

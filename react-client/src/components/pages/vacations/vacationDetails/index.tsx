@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { addCommentService, getCommentsService, getVacationDetailsService } from "./service";
+import { Loader } from "../../../ui-components/loader";
 
 export interface IComment {
   commentId: number,
@@ -8,29 +9,23 @@ export interface IComment {
   comment: string,
 }
 const VacationDetails = () => {
-  const navigate = useNavigate();
   const [vacation, setVacation] = useState<any>(null);
   const [comments, setComments] = useState<any[]>([]);
   const { vacationId } = useParams();
   const [comment, setComment] = useState('');
 
-
   useEffect(() => {
     fetchData();
     getComments();
   }, [vacationId]);
+
   async function getComments() {
     try {
-      await getCommentsService(vacationId).
-        then((res) => {
-          setComments(res!)
-
-        }).catch;
+      const result: any = await getCommentsService(vacationId)
+      setComments(result)
     }
     catch (error) {
-      debugger
-      console.log("error");
-
+      alert("error" + error);
     }
   }
   async function fetchData() {
@@ -49,15 +44,17 @@ const VacationDetails = () => {
   };
 
   async function addComment() {
-       
-   await addCommentService(comment, vacation.vacationId)
-//לסדר שיהיה בדיקה האם חזר נתונים ולתפוס בארור
-getComments();
-setComment ("");
+    try {
+      await addCommentService(comment, vacation.vacationId)
+      getComments();
+      setComment("");
+    }
+    catch (e) {
+      alert(e)
+    }
   }
 
   return (
-
     <div>
       {vacation ?
         <div style={{ display: "flex", flexWrap: "wrap" }}>
@@ -70,7 +67,6 @@ setComment ("");
               width: "60%",
             }}
           >
-
             <img
               src={vacation.imageFileName}
               style={{ width: "100%", marginBottom: "8px" }}
@@ -96,21 +92,14 @@ setComment ("");
                   value={comment}
                   onChange={handleCommentChange}
                 />
-
                 <hr />
-
                 <button disabled={!comment} onClick={addComment}>add comment</button>
               </div>
-
-              {/* <textarea name="addComment" id="addCommenbt" ></textarea> */}
-              {/* <button type="button" onClick={addComment}>add comment</button> */}
             </div>
-
           </div>
 
-
         </div>
-        : <h1>loading...</h1>}
+        : <Loader></Loader>}
     </div>
   );
 };

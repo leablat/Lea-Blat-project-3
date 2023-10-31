@@ -82,10 +82,10 @@ function App() {
 
     function showRoutesPerRole(role?: boolean) {
         if (!checkIsAdminJwt() && role === true)
-            return false 
+            return false
         return true
     }
-    
+
     return (
         <UTCContext.Provider value={{ isUtc }}>
             <div>

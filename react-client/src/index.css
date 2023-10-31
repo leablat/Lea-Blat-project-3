@@ -76,9 +76,11 @@ button:focus-visible {
 
 .active {
   background-color: #ee1379;
+  opacity: 0.9;
 }
 
 .not-active {
+  opacity: 0.9;
   background-color: #454547;
 }
 

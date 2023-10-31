@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
-import { TypeOf, coerce, date, object, string } from "zod";
+import { TypeOf, coerce, object, string } from "zod";
 import { editVacationService, getVacationService } from "./service";
 import { useNavigate, useParams } from "react-router-dom";
+import { Loader } from "../../ui-components/loader";
 
 const editVacationSchema = object({
   destination: string().nonempty('destination must be filled!'),
@@ -16,19 +17,17 @@ const editVacationSchema = object({
 type editVacationInput = TypeOf<typeof editVacationSchema>;
 
 const EditVacation = () => {
-  const [correctDate, setCorrectDate] = useState("")
-
+  const [dateError, setDateError] = useState("")
   const navigate = useNavigate();
   const { vacationId } = useParams();
-
   const methods = useForm<editVacationInput>({
     resolver: zodResolver(editVacationSchema),
   });
 
   const [vacation, setVacation] = useState<editVacationInput | null>(null);
 
+  
   useEffect(() => {
-
     async function fetchData() {
       try {
         const vacationData = await getVacationService(vacationId);
@@ -40,40 +39,33 @@ const EditVacation = () => {
         console.log("Error fetching vacation data:", error);
       }
     }
-
+    
     fetchData();
   }, [vacationId]);
 
-
   const { handleSubmit } = methods;;
-
   const onSubmit = async (data: editVacationInput) => {
     const formattedData = {
       ...data,
       startDate: new Date(data.startDate).toISOString().slice(0, 10),
       endDate: new Date(data.endDate).toISOString().slice(0, 10)
     };
-    console.log('add vacation', formattedData);
     if (formattedData.endDate < formattedData.startDate) {
-      setCorrectDate('End date cannot be earlier than start date.');
+      setDateError('End date cannot be earlier than start date.');
     } else {
       try {
-        const result = await editVacationService(vacationId, formattedData);
-        console.log('result', result);
+        await editVacationService(vacationId, formattedData);
         navigate('/vacations');
       } catch (error) {
         console.error('Failed to add vacation', error);
       }
     }
-
-
   }
-
 
   return (
     <div>
       <h1>Edit Vacation</h1>
-      {vacation ? (
+      {vacation ? 
         <FormProvider {...methods}>
           <form id="form" onSubmit={handleSubmit(onSubmit)}>
             <div style={{ display: "flex", flexDirection: "column" }}>
@@ -110,7 +102,7 @@ const EditVacation = () => {
                 {...methods.register("endDate")}
                 defaultValue={vacation.endDate as any}
               />
-              <span className="error">{correctDate}</span>
+              <span className="error">{dateError}</span>
 
               {methods.formState.errors.endDate && (
                 <span className="error">{methods.formState.errors.endDate.message}</span>
@@ -139,10 +131,11 @@ const EditVacation = () => {
               Update
             </button>
           </form>
-        </FormProvider>
-      ) : (
-        <p>Loading...</p>
-      )}
+        </FormProvider> 
+       : <p>
+        <Loader></Loader>
+        </p>
+      }
     </div>
   );
 };

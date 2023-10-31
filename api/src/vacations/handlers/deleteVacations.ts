@@ -1,10 +1,10 @@
 import { pool } from "../../../../database"
-
 import { ResultSetHeader } from "mysql2";
-import { IVacation } from "./addVacation";
 
 async function deleteVacation(vacationId: number) {
   try {
+    console.log("delete", vacationId);
+
     const [deletedVacation] = await pool.execute(
       'DELETE FROM vacations WHERE vacationId =? ',
       [vacationId]

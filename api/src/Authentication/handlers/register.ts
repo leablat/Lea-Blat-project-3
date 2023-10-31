@@ -9,10 +9,6 @@ interface IPayload {
 
 async function signUp(signUpPayload: IPayload): Promise<number> {
     const { email, firstName, lastName, password } = signUpPayload
-    if (typeof email !== 'string' ||
-        typeof firstName !== 'string' ||
-        typeof lastName !== 'string' ||
-        typeof password !== 'string') throw new Error("not valid types")
     try {
         const query = "INSERT INTO `vacations`.`users` (`firstName`, `lastName`, `email`, `password`, `role`) VALUES (?,?,?,?,?)";
         const result = await pool.execute(query, [firstName, lastName, email, password, "user"])

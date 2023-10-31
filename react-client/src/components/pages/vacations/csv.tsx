@@ -1,17 +1,16 @@
 import { useState, useEffect } from 'react';
-import axiosConfig from '../helper/httpConfig';
+import { axiosConfig } from '../helper/httpConfig';
 
 function CSVGenerator() {
-  const [data, setData] = useState<any[]>([]); // Replace 'any[]' with the actual data type
+  const [data, setData] = useState<any[]>([]);
 
-  // Simulate fetching data from an API (replace with your API call)
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
     try {
-      const response = await fetch(`${axiosConfig.baseUrl}/followers/getReportData`); // Replace with your API endpoint
+      const response = await fetch(`${axiosConfig().baseUrl}/followers/getReportData`); // Replace with your API endpoint
       if (response.ok) {
         const data = await response.json();
         setData(data);
@@ -28,24 +27,13 @@ function CSVGenerator() {
       console.error('No data to export.');
       return;
     }
-
     const csvContent = 'Destination,Followers\n' + data.map((row) => `${row.vacationDestination},${row.likesCount}`).join('\n');
-
-    // Create a Blob object with the CSV data
     const blob = new Blob([csvContent], { type: 'text/csv' });
-
-    // Create a URL for the Blob
     const url = window.URL.createObjectURL(blob);
-
-    // Create a link element to trigger the download
     const a = document.createElement('a');
     a.href = url;
     a.download = 'vacation_destinations.csv';
-
-    // Trigger a click event on the link to initiate the download
     a.click();
-
-    // Clean up the URL object
     window.URL.revokeObjectURL(url);
   };
 

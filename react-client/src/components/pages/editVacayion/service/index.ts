@@ -1,17 +1,12 @@
 import axios from "axios";
-import {axiosConfig} from "../../helper/httpConfig";
+import { axiosConfig } from "../../helper/httpConfig";
 
-async function getVacationService(vacationId:any) {
+async function getVacationService(vacationId: any) {
   try {
-    console.log(axiosConfig);
-    
-    // const url = `${axiosConfig.baseUrl}/vacations/${vacationId}`;
     const { data } = await axios.get(`${axiosConfig().baseUrl}/vacations/${vacationId}`, axiosConfig().options);
-
     if (!data) {
-      throw new Error(`Vacation with ID ${vacationId} not found`);
+      throw Error(`Vacation with ID ${vacationId} not found`);
     }
-
     const vacation = {
       vacationId: data.vacationId,
       destination: data.destination,
@@ -27,24 +22,13 @@ async function getVacationService(vacationId:any) {
   }
 }
 
-
-
-
-async function editVacationService(vacationId:any, updatedVacation:any) {
+async function editVacationService(vacationId: any, updatedVacation: any) {
   try {
-    const { destination, description, startDate, endDate, price, imageFileName } = updatedVacation;
-    if (!destination || !description || !startDate || !endDate ||!price || !imageFileName) {
-      alert("All fields are mandatory!");
-      throw new Error("Missing required fields");
-    }
-
     const url = `${axiosConfig().baseUrl}/vacations/${vacationId}`;
-    const { data } = await axios.put(url, updatedVacation, axiosConfig().options);
-    
-    return data;
+    await axios.put(url, updatedVacation, axiosConfig().options);
   } catch (e) {
-    throw e; // Re-throw the caught error
+    throw e;
   }
 }
 
-export { editVacationService,getVacationService };
+export { editVacationService, getVacationService };

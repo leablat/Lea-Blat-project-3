@@ -8,9 +8,6 @@ async function deleteFollowersByVacationId(vacationId: number) {
             'DELETE FROM followers WHERE vacationId =? ',
             [vacationId]
         );
-        if ((deleteFollowers as ResultSetHeader).affectedRows === 0) {
-            throw new Error(`Vacation with ID ${vacationId} not found.`);
-        }
     }
     catch (error) {
         throw Error(`Vacation with ID ${vacationId} not found.`);

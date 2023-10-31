@@ -1,0 +1,119 @@
+
+.card-container {
+    width: 300px;
+    justify-content: center;
+    padding: 80px;
+    display: flex;
+    align-items: center; 
+}
+
+.p-card {
+    width: 300px; 
+    height: 550px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+}
+.admin-buttons {
+    position: relative;
+    z-index: 5;
+    padding: -20px;
+    margin-left: -150px;
+    top: -30px; 
+}
+
+
+
+.like-button {
+    position: relative;
+    z-index: 5;
+    margin-right: 200px;
+    top: -30px;
+    opacity: 0.6;
+}
+
+.like-button-active {
+    background: rgb(101, 169, 218);
+}
+
+/* .icons{
+    margin-left: -30;
+    margin-top: -30;
+} */
+
+
+.edit-button {
+    margin-right: 10px;
+    opacity: 0.7;
+}
+
+.delete-button {
+    opacity: 0.7;
+}
+
+.vacation-image {
+    width: 300px;
+    height: 150px;
+    margin:auto;
+    margin-top: -97px;
+    border-radius: 5px;
+}
+
+.date-range {
+    border-radius: 5px;
+    background: rgb(101, 169, 218);
+    color: white;
+    width: 300px;
+    height: 40px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: -16px;
+    margin-top: -15px;
+    position: absolute
+}
+
+.destination {
+    position: absolute;
+    margin-top: -70px;
+    color: whitesmoke;
+
+}
+
+.description {
+    position: absolute;
+    border-radius: 5px;
+    background: white;
+    margin-top: 20px;
+    width: 295px; 
+    max-height: 300px; 
+    overflow: auto;
+    color: black;
+    margin-left: -14px;
+    text-align: center;
+    font-size: 15px;
+    padding: 5px; 
+    white-space: normal; 
+}
+
+
+.price {
+    display: flex;
+    position: absolute;
+    border-radius: 10px;
+    background:  rgb(101, 169, 218);
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 250px;
+    margin: 5px;
+    margin-top: 330px;
+    height: 40px;
+    font-size: 20px;
+}
+.image-container{
+    width: 300px;
+    max-height: 100px;
+    margin-top: -330px;
+}

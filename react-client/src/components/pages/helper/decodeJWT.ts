@@ -10,10 +10,10 @@ export function checkIsAdminJwt() {
     }
     return false
 }
+
 export function getJwtPayloads() {
     const token = localStorage.getItem("token")
     if (token)
         return decodeJWT(token || "")
     return {}
 }
-// export {getJwtPayloads, checkIsAdminJwt}

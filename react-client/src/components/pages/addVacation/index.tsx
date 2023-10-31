@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 const newVacationSchema = object({
-    destination: string().nonempty('destination must be filled!'),
+    destination: string().nonempty('description must be filled!'),
     description: string().nonempty('description must be filled!'),
     startDate: coerce.date().min(new Date(Date.now()), 'Start date must be after today'),
     endDate: coerce.date(),
@@ -18,7 +18,6 @@ type newVacationInput = TypeOf<typeof newVacationSchema>;
 
 const AddVacation = () => {
     const [correctDate, setCorrectDate] = useState("")
-
     const navigate = useNavigate();
     const methods = useForm<newVacationInput>({
         resolver: zodResolver(newVacationSchema),
@@ -27,24 +26,19 @@ const AddVacation = () => {
     const { handleSubmit } = methods;
 
     const onSubmit = async (data: newVacationInput) => {
-        // Format the date to the desired format
         const formattedData = {
             ...data,
             startDate: new Date(data.startDate).toISOString().slice(0, 10),
             endDate: new Date(data.endDate).toISOString().slice(0, 10)
-        };
-    
-        console.log('add vacation', formattedData);
-    
+        };    
         if (formattedData.endDate < formattedData.startDate) {
             setCorrectDate('End date cannot be earlier than start date.');
         } else {
             try {
-                const result = await addNewVacationService(formattedData);
-                console.log('result', result);
+                await addNewVacationService(formattedData);
                 navigate('/vacations');
             } catch (error) {
-                console.error('Failed to add vacation', error);
+                alert('Failed to add vacation. the error is: ' + error);
             }
         }
     };

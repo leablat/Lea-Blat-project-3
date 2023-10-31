@@ -2,20 +2,17 @@ import { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale } from 'chart.js/auto'; // Import scales and other necessary modules
 import { getReportDataService } from './servise';
+import { Loader } from '../../ui-components/loader';
 
-
-// Register the scales
 Chart.register(CategoryScale, LinearScale);
 
 type ReportData = {
   destination: string;
   followers: number;
-  // Other properties if present
 };
 
 function VacationReport() {
   const [reportData, setReportData] = useState<ReportData[]>([]);
-
   useEffect(() => {
     async function fetchReportData() {
       try {
@@ -45,11 +42,11 @@ function VacationReport() {
   const chartOptions = {
     scales: {
       x: {
-        type: 'category' as 'category', // Use type assertion here
+        type: 'category' as 'category', 
         beginAtZero: true,
       },
       y: {
-        type: 'linear' as 'linear', // Use type assertion here
+        type: 'linear' as 'linear', 
         beginAtZero: true,
       },
     },
@@ -62,7 +59,7 @@ function VacationReport() {
       {reportData.length > 0 ? (
         <Bar data={chartData} options={chartOptions} />
       ) : (
-        <p>Loading report data...</p>
+        <Loader></Loader>
       )}
     </div>
     </div>
