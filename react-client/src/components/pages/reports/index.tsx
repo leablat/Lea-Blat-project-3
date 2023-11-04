@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
-import { Chart, CategoryScale, LinearScale } from 'chart.js/auto'; // Import scales and other necessary modules
+import { Chart, CategoryScale, LinearScale } from 'chart.js/auto'; 
 import { getReportDataService } from './servise';
 import { Loader } from '../../ui-components/loader';
 import { useNavigate } from 'react-router-dom';
