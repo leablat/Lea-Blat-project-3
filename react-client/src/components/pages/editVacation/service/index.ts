@@ -26,8 +26,11 @@ async function editVacationService(vacationId: any, updatedVacation: any) {
   try {
     const url = `${axiosConfig().baseUrl}/vacations/${vacationId}`;
     await axios.put(url, updatedVacation, axiosConfig().options);
-  } catch (e) {
-    throw e;
+  } catch (error: any) {
+    if (error.response.status == 401) {
+      throw Error("401");
+    }
+    throw Error("error");
   }
 }
 

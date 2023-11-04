@@ -5,6 +5,7 @@ import { TypeOf, object, string } from 'zod';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader } from '../../ui-components/loader';
+import { axiosConfig } from '../helper/httpConfig';
 
 const loginSchema = object({
     email: string().email("Invalid email"),
@@ -25,7 +26,7 @@ const LoginForm = () => {
     const onSubmit = async (data: loginInput) => {
         try {
             setLaoderStatus(true)
-            const result = await axios.post("http://localhost:4002/auth/login", data)
+            const result = await axios.post(`${axiosConfig().baseUrl}/auth/login`, data)
             localStorage.setItem("token", result.data.token)
             setTimeout(() => { navigate("/vacations") }, 1000)
         } catch (error: any) {
@@ -39,7 +40,7 @@ const LoginForm = () => {
                     setErrorMessage("Something went wrong!")
                 }
             }
-        }   
+        }
         setLaoderStatus(false)
     }
 
@@ -49,22 +50,24 @@ const LoginForm = () => {
 
     return (
         LaoderStatus ? <Loader></Loader> :
-            <FormProvider {...methods} >
-                <form id="form" onSubmit={handleSubmit(onSubmit)}>
-                    <div style={{ display: "flex", flexDirection: "column" }}>
-                        Email
-                        <input type="email" {...methods.register("email")} />
-                        {methods.formState.errors.email && <span className="error">{methods.formState.errors.email.message}</span>}
-                        Password
-                        <input type="password" {...methods.register("password")} />
-                        {methods.formState.errors.password && <span className="error">{methods.formState.errors.password.message}</span>}
-                    </div>
-                    <span className='error'> {errorMessage}</span>
-                    <button type="submit">Sign In</button>
-                    <br></br>
-                    <button type="button" onClick={newUser}>New user</button>
-                </form>
-            </FormProvider>
+            <div className='form-container'>
+                <FormProvider {...methods} >
+                    <form id="form" onSubmit={handleSubmit(onSubmit)}>
+                        <div style={{ display: "flex", flexDirection: "column" }}>
+                            Email
+                            <input className='input-control' type="email" {...methods.register("email")} />
+                            {methods.formState.errors.email && <span className="error">{methods.formState.errors.email.message}</span>}
+                            Password
+                            <input className='input-control' type="password" {...methods.register("password")} />
+                            {methods.formState.errors.password && <span className="error">{methods.formState.errors.password.message}</span>}
+                        </div>
+                        <span className='error'> {errorMessage}</span>
+                        <button type="submit">Sign In</button>
+                        <br></br>
+                        <button type="button" onClick={newUser}>New user</button>
+                    </form>
+                </FormProvider>
+            </div>
     );
 };
 export default LoginForm;

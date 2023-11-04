@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { addCommentService, getCommentsService, getVacationDetailsService } from "./service";
 import { Loader } from "../../../ui-components/loader";
 
@@ -9,6 +9,7 @@ export interface IComment {
   comment: string,
 }
 const VacationDetails = () => {
+  const navigate = useNavigate();
   const [vacation, setVacation] = useState<any>(null);
   const [comments, setComments] = useState<any[]>([]);
   const { vacationId } = useParams();
@@ -24,8 +25,11 @@ const VacationDetails = () => {
       const result: any = await getCommentsService(vacationId)
       setComments(result)
     }
-    catch (error) {
-      alert("error" + error);
+    catch (error:any) {
+      if (error.message == '401') {
+        navigate('/login')
+      }
+      alert(error)
     }
   }
   async function fetchData() {
@@ -49,15 +53,18 @@ const VacationDetails = () => {
       getComments();
       setComment("");
     }
-    catch (e) {
-      alert(e)
+    catch (error:any) {
+      if (error.message == '401') {
+        navigate('/login')
+      }
+      alert(error)
     }
   }
 
   return (
     <div>
       {vacation ?
-        <div style={{ display: "flex", flexWrap: "wrap" }}>
+        <div className="vacation-details-container">
           <div
             style={{
               border: "1px solid #ccc",
@@ -85,8 +92,8 @@ const VacationDetails = () => {
               ))}
 
               <div>
-                <label htmlFor="message">My Textarea</label>
-                <textarea
+                <label htmlFor="message">Add your comment: </label>
+                <textarea className="form-control"
                   id="message"
                   name="message"
                   value={comment}

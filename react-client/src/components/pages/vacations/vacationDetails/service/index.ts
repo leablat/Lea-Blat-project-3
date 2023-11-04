@@ -41,8 +41,11 @@ async function getCommentsService(vacationId: any) {
       }
     })
     return comments;
-  } catch (error) {
-    throw error;
+  } catch (error: any) {
+    if (error.response.status == 401) {
+      throw Error("401");
+    }
+    throw Error("error");
   }
 }
 

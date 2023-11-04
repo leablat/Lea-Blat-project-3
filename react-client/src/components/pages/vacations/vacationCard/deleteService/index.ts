@@ -6,8 +6,11 @@ async function deleteVacationService(vacationId: Number) {
     await axios.delete(`${axiosConfig().baseUrl}/vacations/${vacationId}`, axiosConfig().options)
     return `Vacation with ID ${vacationId} has been deleted.`;
   }
-  catch (error) {
-    throw error;
+  catch (error: any) {
+    if (error.response.status == 401) {
+      throw Error("401");
+    }
+    throw Error("error");
   }
 }
 

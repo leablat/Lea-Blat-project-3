@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from "express";
-import varifyIsAdmin from "../Authorization/handlers/varifyIsAdmin";
+import varifyIsAdmin from "../authorization/handlers/varifyIsAdmin";
 import { getReportData } from "./handlers/getReportData";
 
 const reportsRouter = express.Router()

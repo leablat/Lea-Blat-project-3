@@ -2,14 +2,18 @@ import './App.css'
 import VacationsList from './components/pages/vacations'
 import ReporstsPage from './components/pages/reports'
 import { createContext, useEffect, useState } from 'react'
-import { Routes, Route, Link, useNavigate, RouteObject } from "react-router-dom"
+import { Routes, Route, Link, useNavigate } from "react-router-dom"
 import { Button } from 'primereact/button'
 import LoginForm from './components/pages/login'
 import Register from './components/pages/register';
 import AddVacation from './components/pages/addVacation';
-import EditVacation from './components/pages/editVacayion';
 import VacationDetails from './components/pages/vacations/vacationDetails'
 import { checkIsAdminJwt, getJwtPayloads } from './components/pages/helper/decodeJWT'
+import topImage from './assets/Images/vacations.png'
+import userIcon from './assets/icons/user.png';
+import EditVacation from './components/pages/editVacation'
+
+
 
 interface IRoute {
     path: string,
@@ -62,7 +66,6 @@ const routes: Array<IRoute> = [
 ]
 export const UTCContext = createContext<{ isUtc: boolean }>({ isUtc: true })
 
-
 function App() {
     const navigate = useNavigate();
     const [isUtc, setIsUtc] = useState(false)
@@ -88,21 +91,33 @@ function App() {
 
     return (
         <UTCContext.Provider value={{ isUtc }}>
-            <div>
-                <div style={{ width: "100%", top: 0, left: 0, position: "absolute", textAlign: "right" }}>
-                    <Button onClick={logoutHandler}> Log Out</Button>
+            <div className="wrapper">
+                <div className="navbar">
+                    <div className="parallax">
+                        <img src={topImage} alt="Top Image" className="parallax" />
+                    </div>
+                    <div className='navbar-content'>
+                        <div><Button onClick={logoutHandler}>LogOut</Button></div>
+                        <div className="nav-links">
+                            {routes.filter((r: IRoute) => r.label && showRoutesPerRole(r.role)).map((route: IRoute) => {
+                                return <Link key={route.label} to={route.path} className="router-item"> {route.label}  </Link>
+                            })}
+                        </div>                       
+                        <div className="user-info">
+                            <img src={userIcon} alt="User Icon"
+                             style={{ width: "30px", height: "30px" }}
+                              />
+                            <span>   {userName ? <div> {userName}</div> : ""}</span>
+                        </div>
+                      
+                    </div>
                 </div>
-                <div style={{ marginTop: "50px" }}>
-                    {routes.filter((r: IRoute) => r.label && showRoutesPerRole(r.role)).map((route: IRoute) => {
-                        return <Link key={route.label} to={route.path} className="router-item"> {route.label}  </Link>
-                    })}
-                </div>
-                {userName ? <div>Hello {userName}</div> : ""}
-                <Routes>
-                    {routes.map((route: IRoute) => {
-                        return <Route path={route.path} key={route.key} element={route.component} />
-                    })}
-                </Routes>
+                <div className='content'>
+                    <Routes>
+                        {routes.map((route: IRoute) => {
+                            return <Route path={route.path} key={route.key} element={route.component} />
+                        })}
+                    </Routes>                </div>
             </div>
         </UTCContext.Provider>
     )

@@ -9,15 +9,15 @@ dotenv.config();
 const authRouter = express.Router();
 
 const loginSchema = object({
-  email: string().email(),
-  password: string().min(4),
+  email: string().email("Invalid email"),
+  password: string().min(4,"Password must be at least 4 characters"),
 });
 
 const signUpSchema = object({
-  email: string().email(),
-  password: string().min(4),
-  firstName: string().min(2),
-  lastName: string().min(2),
+  email: string().email("Invalid email"),
+  firstName: string().nonempty('firstName must be filled!'),
+  password: string().min(4, "Password must be at least 4 characters"),
+  lastName: string().nonempty('lastName must be filled!'),
 });
 
 authRouter.post("/login", loginFunc);

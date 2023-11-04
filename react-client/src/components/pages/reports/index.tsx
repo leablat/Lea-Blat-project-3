@@ -3,6 +3,7 @@ import { Bar } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale } from 'chart.js/auto'; // Import scales and other necessary modules
 import { getReportDataService } from './servise';
 import { Loader } from '../../ui-components/loader';
+import { useNavigate } from 'react-router-dom';
 
 Chart.register(CategoryScale, LinearScale);
 
@@ -13,13 +14,17 @@ type ReportData = {
 
 function VacationReport() {
   const [reportData, setReportData] = useState<ReportData[]>([]);
+  const navigate = useNavigate();
   useEffect(() => {
     async function fetchReportData() {
       try {
         const data = await getReportDataService();
         setReportData(data.reportData);
-      } catch (error) {
-        console.error('Error fetching report data:', error);
+      } catch (error:any) {
+        if (error.message == '401') {
+          navigate('/login')
+        }
+        alert(error)
       }
     }
 
@@ -32,8 +37,8 @@ function VacationReport() {
       {
         label: 'Number of Followers',
         data: reportData.map(item => item.followers),
-        backgroundColor: 'rgba(75, 192, 192, 0.6)',
-        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(0, 120, 0, 0.5)',
+        borderColor: 'rgba(0, 120, 0, 0.5)',
         borderWidth: 1,
       },
     ],
@@ -53,9 +58,9 @@ function VacationReport() {
   };
 
   return (
-    <div>
+    <div className='report-container'>
       <h2>Vacation Report</h2>
-      <div style={{ width: '1000px', height: '900px' }}>
+      <div className='reports'>
       {reportData.length > 0 ? (
         <Bar data={chartData} options={chartOptions} />
       ) : (

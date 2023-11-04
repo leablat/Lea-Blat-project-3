@@ -3,10 +3,10 @@ import { getAllVacations } from "./handlers/getAllVacations";
 import { addVacation } from "./handlers/addVacation";
 import { updateVacation } from "./handlers/editVacation";
 import { deleteVacation } from "./handlers/deleteVacations";
-import varifyIsAdmin from "../Authorization/handlers/varifyIsAdmin";
 import { getVacationById } from "./handlers/getVacationById";
 import { deleteFollowersByVacatuonId as deleteFollowersByVacationId } from "../followers/handlers/deleteFollowersByVacatuonId";
 import { coerce, object, string } from "zod";
+import varifyIsAdmin from "../authorization/handlers/varifyIsAdmin";
 
 const vacationsRouter = express.Router();
 

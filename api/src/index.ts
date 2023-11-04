@@ -3,10 +3,10 @@ import dotenv from "dotenv"
 import cors from "cors"
 import { vacationsRouter } from "./vacations/route";
 import jsonwebtoken from "jsonwebtoken";
-import { authRouter } from "./Authentication/route";
 import { followersRouter } from "./followers/route";
-import { commentsRouter } from "./Comments/route";
 import { reportsRouter } from "./report/route";
+import { authRouter } from "./authentication/route";
+import { commentsRouter } from "./comments/route";
 
 dotenv.config()
 

@@ -1,0 +1,13 @@
+.pagination .page-link {
+  background-color: white;
+  color: rgb(101, 169, 218);
+}
+
+.pagination .page-link.active {
+  background-color: white;
+  color: rgb(101, 169, 218);
+}
+
+.pagination {
+  text-align: center;
+}
