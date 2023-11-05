@@ -27,7 +27,6 @@ function VacationReport() {
         alert(error)
       }
     }
-
     fetchReportData();
   }, []);
 
